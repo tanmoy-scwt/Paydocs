@@ -262,13 +262,14 @@ const FillOutApplication = ({ action }) => {
                                         variant="contained"
                                         sx={{
                                             mt: 2,
+                                            mb: 2,
                                             background: theme.palette.secondary.main,
                                             '&:hover': {
                                                 backgroundColor: theme.palette.secondary.dark
                                             }
                                         }}
                                     >
-                                        Publish Job
+                                        Submit Now
                                     </Button>
                                 </AnimateButton>
                             </Box>

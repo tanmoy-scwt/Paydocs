@@ -39,7 +39,7 @@ const SearchBox = () => {
                 borderRadius: '30px',
                 boxShadow: '0px 3px 16px 0px #8E86AB1A',
                 overflow: 'hidden',
-                background: theme.palette.mode === 'dark' ? '' : '#FFFFFF' // just for testing background visibility
+                background: theme.palette.mode === 'dark' ? '' : '#FFFFFF'
             }}
         >
             {/* Company Name Input */}
@@ -48,10 +48,14 @@ const SearchBox = () => {
                 placeholder="Company Name"
                 startAdornment={
                     <InputAdornment position="start">
-                        <SearchIcon fontSize="small" sx={{ color: theme.palette.grey[500], background: 'transparent' }} />
+                        <SearchIcon fontSize="small" sx={{ color: theme.palette.grey[500] }} />
                     </InputAdornment>
                 }
-                sx={{ ...inputStyles }}
+                sx={{
+                    ...inputStyles,
+                    flex: 1,
+                    minWidth: 0 // important to allow shrinking
+                }}
             />
 
             {/* Location Input */}
@@ -60,12 +64,14 @@ const SearchBox = () => {
                 placeholder="Location"
                 startAdornment={
                     <InputAdornment position="start">
-                        <LocationOnIcon fontSize="small" sx={{ color: theme.palette.grey[500], background: 'transparent' }} />
+                        <LocationOnIcon fontSize="small" sx={{ color: theme.palette.grey[500] }} />
                     </InputAdornment>
                 }
                 sx={{
                     ...inputStyles,
-                    pr: 0, // remove right padding
+                    flex: 1,
+                    minWidth: 0,
+                    pr: 0,
                     borderLeft: '1px solid #BAC2D3',
                     borderRadius: 0
                 }}
@@ -75,16 +81,16 @@ const SearchBox = () => {
                 variant="contained"
                 color="primary"
                 sx={{
-                    flex: 1,
                     background: theme.palette.secondary.main,
-                    minWidth: 126,
-                    maxWidth: '100%',
+                    '&:hover': {
+                        background: theme.palette.secondary.dark
+                    },
                     height: '48px',
                     textTransform: 'none',
-                    borderRadius: '30px 30px 30px 30px', // only round the right side
+                    borderRadius: '30px 30px 30px 30px',
                     boxShadow: 'none',
-                    ml: 0, // ensure no left margin
-                    px: 2
+                    whiteSpace: 'nowrap', // ensures content-based width
+                    px: 5
                 }}
                 onClick={() => {
                     console.log('Search clicked');

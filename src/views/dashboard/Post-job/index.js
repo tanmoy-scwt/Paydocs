@@ -309,8 +309,6 @@ const PostAJob = () => {
                                     sx={{
                                         marginTop: '1rem',
                                         paddingX: 2.25,
-                                        // bgcolor: '#f5f5f5',
-                                        // bgcolor: '#f5f5f5',
                                         bgcolor: theme.palette.mode === 'dark' ? theme.palette.dark.level2 : '#f5f5f5',
                                         borderRadius: 2
                                     }}
@@ -358,8 +356,6 @@ const PostAJob = () => {
                                                         size="large"
                                                         sx={{
                                                             backgroundColor: '#E2E9F8',
-                                                            // backgroundColor:
-                                                            // theme.palette.mode === 'dark' ? theme.palette.darkPaper : '#E2E9F8',
                                                             color: '#2B2D3B',
                                                             '&:hover': {
                                                                 backgroundColor: '#E2E9F9'
@@ -396,6 +392,7 @@ const PostAJob = () => {
                                         variant="contained"
                                         sx={{
                                             mt: 2,
+                                            mb: 2,
                                             background: theme.palette.secondary.main,
                                             '&:hover': {
                                                 backgroundColor: theme.palette.secondary.dark

@@ -3,20 +3,20 @@ import React from 'react';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
-import { Avatar, Box, Grid, Menu, MenuItem, Typography } from '@mui/material';
+import { Avatar, Box, Grid, Typography } from '@mui/material';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonEarningCard from 'ui-component/cards/Skeleton/EarningCard';
 // assets
 import CompanyLogo from 'assets/images/icons/MLogo.png';
-import MenuLogo from 'assets/images/icons/menu.svg';
+// import MenuLogo from 'assets/images/icons/menu.svg';
 // import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 // import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import GetAppTwoToneIcon from '@mui/icons-material/GetAppOutlined';
-import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
-import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
-import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
+// import GetAppTwoToneIcon from '@mui/icons-material/GetAppOutlined';
+// import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
+// import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
+// import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.dark : theme.palette.paper,
@@ -31,15 +31,15 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 const CompanyBoxCard = ({ isLoading }) => {
     const theme = useTheme();
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    // const [anchorEl, setAnchorEl] = React.useState(null);
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+    // const handleClick = (event) => {
+    //     setAnchorEl(event.currentTarget);
+    // };
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    // const handleClose = () => {
+    //     setAnchorEl(null);
+    // };
 
     return (
         <>
@@ -67,8 +67,8 @@ const CompanyBoxCard = ({ isLoading }) => {
                                             <img src={CompanyLogo} alt="Notification" />
                                         </Avatar>
                                     </Grid>
-                                    <Grid item>
-                                        <Avatar
+                                    {/* <Grid item> */}
+                                    {/* <Avatar
                                             variant="rounded"
                                             //  borderRadius: '50%'
                                             sx={{
@@ -89,8 +89,8 @@ const CompanyBoxCard = ({ isLoading }) => {
                                             onClick={handleClick}
                                         >
                                             <img src={MenuLogo} width={30} height={30} alt="Menu" />
-                                        </Avatar>
-                                        <Menu
+                                        </Avatar> */}
+                                    {/* <Menu
                                             id="menu-earning-card"
                                             anchorEl={anchorEl}
                                             keepMounted
@@ -118,8 +118,8 @@ const CompanyBoxCard = ({ isLoading }) => {
                                             <MenuItem onClick={handleClose}>
                                                 <ArchiveTwoToneIcon sx={{ mr: 1.75 }} /> Archive File
                                             </MenuItem>
-                                        </Menu>
-                                    </Grid>
+                                        </Menu> */}
+                                    {/* </Grid> */}
                                 </Grid>
                             </Grid>
                             <Grid item>

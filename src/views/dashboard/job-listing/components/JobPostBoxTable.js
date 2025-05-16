@@ -48,7 +48,7 @@ const JobPostBoxTable = ({ action, jobDetails }) => {
                 >
                     <img
                         style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-                        src={companylogo}
+                        src={companylogo != undefined ? companylogo : ''}
                         alt="Notification"
                     />
                 </Avatar>
@@ -146,7 +146,7 @@ const JobPostBoxTable = ({ action, jobDetails }) => {
                         variant="contained"
                         size="large"
                     >
-                        Action
+                        Apply Now
                     </Button>
                 </Box>
             </Box>
