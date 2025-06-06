@@ -228,7 +228,7 @@ const EditItem = ({ item, profiles, userStory, columns, handleDrawerOpen }) => {
                                     <Select
                                         id="storyId"
                                         name="storyId"
-                                        displayEmpty
+                                        displayempty
                                         value={formik.values.storyId}
                                         onChange={formik.handleChange}
                                         inputProps={{ 'aria-label': 'Without label' }}
@@ -253,7 +253,7 @@ const EditItem = ({ item, profiles, userStory, columns, handleDrawerOpen }) => {
                                     <Select
                                         id="columnId"
                                         name="columnId"
-                                        displayEmpty
+                                        displayempty
                                         value={formik.values.columnId}
                                         onChange={formik.handleChange}
                                         inputProps={{ 'aria-label': 'Without label' }}

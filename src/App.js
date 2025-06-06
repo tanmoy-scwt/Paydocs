@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 
 // routing
 import Routes from 'routes';
@@ -8,12 +8,12 @@ import Locales from 'ui-component/Locales';
 import NavigationScroll from 'layout/NavigationScroll';
 import RTLLayout from 'ui-component/RTLLayout';
 import Snackbar from 'ui-component/extended/Snackbar';
-import Loader from 'ui-component/Loader';
+// import Loader from 'ui-component/Loader';
 import Notistack from 'ui-component/third-party/Notistack';
 
 import ThemeCustomization from 'themes';
-import { dispatch } from 'store';
-import { getMenu } from 'store/slices/menu';
+// import { dispatch } from 'store';
+// import { getMenu } from 'store/slices/menu';
 
 // auth provider
 import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
@@ -24,15 +24,15 @@ import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 // ==============================|| APP ||============================== //
 
 const App = () => {
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        dispatch(getMenu()).then(() => {
-            setLoading(true);
-        });
-    }, []);
+    // useEffect(() => {
+    //     dispatch(getMenu()).then(() => {
+    //         setLoading(true);
+    //     });
+    // }, []);
 
-    if (!loading) return <Loader />;
+    // if (!loading) return <Loader />;
 
     return (
         <ThemeCustomization>

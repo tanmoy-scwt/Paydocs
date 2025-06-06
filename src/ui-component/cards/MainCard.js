@@ -32,7 +32,7 @@ const MainCard = React.forwardRef(
         ref
     ) => {
         const theme = useTheme();
-        console.log(isLoading, 'isLoading');
+        // console.log(isLoading, 'isLoading');
 
         return (
             <Card

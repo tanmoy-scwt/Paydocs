@@ -5,15 +5,15 @@ import Chart from 'react-apexcharts';
 // import useConfig from 'hooks/useConfig';
 import MainCard from 'ui-component/cards/MainCard';
 // import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-const PopularCityChartCard = ({ isLoading }) => {
+const PopularCityChartCard = ({ isLoading, chartDataAPI }) => {
     const theme = useTheme();
     // const { rtlLayout } = useConfig();
     const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
     const matchDownXs = useMediaQuery(theme.breakpoints.down('sm'));
-    const values = [1258, 975, 500];
-    const labels = ['Mumbai', 'Delhi', 'Bangalore'];
+    const values = chartDataAPI ? chartDataAPI?.map((item) => item?.jobPostPercentage) : [0, 0, 0];
+    const labels = chartDataAPI ? chartDataAPI?.map((item) => item?.city) : ['---', '---', '---'];
     const total = values.reduce((a, b) => a + b, 0);
-    const percentages = values.map((v) => ((v / total) * 100).toFixed(1));
+    const percentages = values.map((v) => (isNaN(((v / total) * 100).toFixed(1)) ? 0 : ((v / total) * 100).toFixed(1)));
 
     const chartOptions = {
         chart: {

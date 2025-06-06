@@ -1,20 +1,14 @@
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import { Box, Button, FormControl, FormHelperText, InputLabel, OutlinedInput } from '@mui/material';
 import { useDispatch } from 'store';
 import { useNavigate } from 'react-router-dom';
-
-// third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-
-// project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
 import { openSnackbar } from 'store/slices/snackbar';
-
-// ========================|| FIREBASE - FORGOT PASSWORD ||======================== //
+import { useEffect, useState } from 'react';
+import { postJobAPIJSON } from 'store/jobThunks/jobThunks';
 
 const AuthForgotPassword = ({ ...others }) => {
     const theme = useTheme();
@@ -22,49 +16,121 @@ const AuthForgotPassword = ({ ...others }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { isLoggedIn, resetPassword } = useAuth();
+    const [myEmail, setMyEmail] = useState('');
+    const [resendDisabled, setResendDisabled] = useState(false);
+    const [counter, setCounter] = useState(30);
+    const [showOtpField, setShowOtpField] = useState(false);
+    const [showPasswordField, setShowPasswordField] = useState(false);
+
+    const validationSchema = Yup.object().shape({
+        email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+        ...(showOtpField && {
+            otp: Yup.string().required('OTP is required')
+        }),
+        ...(showPasswordField && {
+            newPassword: Yup.string()
+                .required('New Password is required')
+                .min(6, 'Minimum 6 characters required')
+                .matches(
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/,
+                    'Password must include at least 1 uppercase, 1 lowercase, 1 number, and 1 special character'
+                )
+        })
+    });
+
+    useEffect(() => {
+        let timer;
+        if (resendDisabled) {
+            timer = setInterval(() => {
+                setCounter((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(timer);
+                        setResendDisabled(false);
+                        return 30;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        }
+        return () => clearInterval(timer);
+    }, [resendDisabled]);
 
     return (
         <Formik
             initialValues={{
                 email: '',
-                submit: null
+                otp: '',
+                newPassword: ''
             }}
-            validationSchema={Yup.object().shape({
-                email: Yup.string().email('Must be a valid email').max(255).required('Email is required')
-            })}
+            validationSchema={validationSchema}
             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                 try {
-                    await resetPassword(values.email).then(
-                        () => {
-                            setStatus({ success: true });
-                            setSubmitting(false);
-                            dispatch(
-                                openSnackbar({
-                                    open: true,
-                                    message: 'Check mail for reset password link',
-                                    variant: 'alert',
-                                    alert: {
-                                        color: 'success'
-                                    },
-                                    close: false
-                                })
-                            );
-                            setTimeout(() => {
-                                navigate(isLoggedIn ? '/auth/check-mail' : '/check-mail', { replace: true });
-                            }, 1500);
+                    if (!showOtpField) {
+                        const emailVerification = {
+                            email: values.email,
+                            send_otp_reason: 'resetPassword'
+                        };
+                        await dispatch(postJobAPIJSON({ API_PATH: '/send-otp', body: emailVerification })).then((response) => {
+                            console.log(response, 'otp response');
 
-                            // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
-                            // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
-                            // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
-                            // github issue: https://github.com/formium/formik/issues/2430
-                        },
-                        (err) => {
-                            setStatus({ success: false });
-                            setErrors({ submit: err.message });
-                            setSubmitting(false);
-                        }
-                    );
+                            if (response?.payload?.status) {
+                                setStatus({ success: true });
+                                setSubmitting(false);
+                                setMyEmail(values.email);
+                                dispatch(
+                                    openSnackbar({
+                                        open: true,
+                                        message: 'Check mail for reset password OTP',
+                                        variant: 'alert',
+                                        alert: { color: 'success' },
+                                        close: false
+                                    })
+                                );
+                                setShowOtpField(true);
+                                setResendDisabled(true);
+                                setCounter(30);
+                            }
+                        });
+                    } else if (showOtpField && !showPasswordField) {
+                        await dispatch(postJobAPIJSON({ API_PATH: '/verify-otp', body: values })).then((response) => {
+                            if (response?.payload?.status) {
+                                setStatus({ success: true });
+                                setSubmitting(false);
+                                dispatch(
+                                    openSnackbar({
+                                        open: true,
+                                        message: 'Your OTP has been successfully verified!',
+                                        variant: 'alert',
+                                        alert: { color: 'success' },
+                                        close: false
+                                    })
+                                );
+                                setShowPasswordField(true);
+                            }
+                        });
+                    } else {
+                        // Final step: Submit new password
+                        const passwordReset = {
+                            email: myEmail,
+                            newpassword: values.newPassword
+                        };
+                        await dispatch(postJobAPIJSON({ API_PATH: '/reset-password', body: passwordReset })).then((response) => {
+                            if (response?.payload?.status) {
+                                setStatus({ success: true });
+                                setSubmitting(false);
+                                dispatch(
+                                    openSnackbar({
+                                        open: true,
+                                        message: 'Password reset successful!',
+                                        variant: 'alert',
+                                        alert: { color: 'success' },
+                                        close: false
+                                    })
+                                );
+                                navigate('/');
+                            }
+                        });
+                    }
                 } catch (err) {
                     console.error(err);
                     if (scriptedRef.current) {
@@ -77,31 +143,105 @@ const AuthForgotPassword = ({ ...others }) => {
         >
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit} {...others}>
+                    {/* Email Field */}
                     <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                        <InputLabel htmlFor="outlined-adornment-email-forgot">Email Address / Username</InputLabel>
+                        <InputLabel htmlFor="email">Email Address</InputLabel>
                         <OutlinedInput
-                            id="outlined-adornment-email-forgot"
+                            id="email"
                             type="email"
                             value={values.email}
                             name="email"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            label="Email Address / Username"
-                            inputProps={{}}
+                            label="Email Address"
+                            disabled={showOtpField}
                         />
-                        {touched.email && errors.email && (
-                            <FormHelperText error id="standard-weight-helper-text-email-forgot">
-                                {errors.email}
-                            </FormHelperText>
-                        )}
+                        {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>}
                     </FormControl>
 
-                    {errors.submit && (
-                        <Box sx={{ mt: 3 }}>
-                            <FormHelperText error>{errors.submit}</FormHelperText>
-                        </Box>
+                    {/* OTP Field */}
+                    {showOtpField && (
+                        <>
+                            <FormControl
+                                fullWidth
+                                error={Boolean(touched.otp && errors.otp)}
+                                sx={{ ...theme.typography.customInput, mt: 2 }}
+                            >
+                                <InputLabel htmlFor="otp">Enter OTP</InputLabel>
+                                <OutlinedInput
+                                    id="otp"
+                                    type="text"
+                                    value={values.otp}
+                                    name="otp"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    label="Enter OTP"
+                                    disabled={showPasswordField}
+                                />
+                                {touched.otp && errors.otp && <FormHelperText error>{errors.otp}</FormHelperText>}
+                            </FormControl>
+
+                            {/* Resend OTP */}
+                            {!showPasswordField && (
+                                <Box sx={{ mt: 1, textAlign: 'right' }}>
+                                    <Button
+                                        variant="text"
+                                        size="small"
+                                        sx={{ textTransform: 'none' }}
+                                        onClick={async () => {
+                                            const emailVerification = {
+                                                email: myEmail,
+                                                send_otp_reason: 'emailVerification'
+                                            };
+                                            await dispatch(postJobAPIJSON({ API_PATH: '/send-otp', body: emailVerification })).then(
+                                                (response) => {
+                                                    if (response?.payload?.status) {
+                                                        dispatch(
+                                                            openSnackbar({
+                                                                open: true,
+                                                                message: 'Check mail for reset password OTP',
+                                                                variant: 'alert',
+                                                                alert: { color: 'success' },
+                                                                close: false
+                                                            })
+                                                        );
+                                                        setResendDisabled(true);
+                                                        setCounter(30);
+                                                    }
+                                                }
+                                            );
+                                        }}
+                                        disabled={resendDisabled}
+                                    >
+                                        {resendDisabled ? `Resend OTP (${counter}s)` : 'Resend OTP'}
+                                    </Button>
+                                </Box>
+                            )}
+                        </>
                     )}
 
+                    {/* New Password Field */}
+                    {showPasswordField && (
+                        <FormControl
+                            fullWidth
+                            error={Boolean(touched.newPassword && errors.newPassword)}
+                            sx={{ ...theme.typography.customInput, mt: 2 }}
+                        >
+                            <InputLabel htmlFor="new-password">New Password</InputLabel>
+                            <OutlinedInput
+                                id="new-password"
+                                type="password"
+                                value={values.newPassword}
+                                name="newPassword"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                label="New Password"
+                            />
+                            {touched.newPassword && errors.newPassword && <FormHelperText error>{errors.newPassword}</FormHelperText>}
+                        </FormControl>
+                    )}
+
+                    {/* Submit Button */}
                     <Box sx={{ mt: 2 }}>
                         <AnimateButton>
                             <Button
@@ -113,10 +253,17 @@ const AuthForgotPassword = ({ ...others }) => {
                                 variant="contained"
                                 color="secondary"
                             >
-                                Send Mail
+                                {showPasswordField ? 'Reset Password' : showOtpField ? 'Verify OTP' : 'Send Mail'}
                             </Button>
                         </AnimateButton>
                     </Box>
+
+                    {/* Submit Error */}
+                    {errors.submit && (
+                        <Box sx={{ mt: 3 }}>
+                            <FormHelperText error>{errors.submit}</FormHelperText>
+                        </Box>
+                    )}
                 </form>
             )}
         </Formik>

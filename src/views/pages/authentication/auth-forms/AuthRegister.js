@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'store';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -43,6 +43,8 @@ const JWTRegister = ({ ...others }) => {
     const navigate = useNavigate();
     const scriptedRef = useScriptRef();
     const dispatch = useDispatch();
+    const [searchParams] = useSearchParams();
+    const RegisteredEmail = searchParams.get('email');
 
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const [showPassword, setShowPassword] = React.useState(false);
@@ -81,20 +83,41 @@ const JWTRegister = ({ ...others }) => {
             </Grid>
 
             <Formik
+                enableReinitialize="true"
                 initialValues={{
-                    email: '',
-                    password: '',
                     firstName: '',
                     lastName: '',
+                    company_name: '',
+                    email: RegisteredEmail ? RegisteredEmail : '',
+                    mobile: '',
+                    password: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
+                    firstName: Yup.string().required('First name is required'),
+
+                    lastName: Yup.string().required('Last name is required'),
+
+                    company_name: Yup.string().required('Company name is required'),
+
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+
+                    mobile: Yup.string()
+                        .matches(/^[0-9]{10}$/, 'Mobile number must be 10 digits')
+                        .required('Mobile number is required'),
+
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        await register(values.email, values.password, values.firstName, values.lastName);
+                        await register(
+                            values.firstName,
+                            values.lastName,
+                            values.company_name,
+                            values.email,
+                            values.mobile,
+                            values.password
+                        );
                         if (scriptedRef.current) {
                             setStatus({ success: true });
                             setSubmitting(false);
@@ -111,7 +134,7 @@ const JWTRegister = ({ ...others }) => {
                             );
 
                             setTimeout(() => {
-                                navigate('/login', { replace: true });
+                                navigate('/', { replace: true });
                             }, 1500);
                         }
                     } catch (err) {
@@ -128,32 +151,64 @@ const JWTRegister = ({ ...others }) => {
                     <form noValidate onSubmit={handleSubmit} {...others}>
                         <Grid container spacing={matchDownSM ? 0 : 2}>
                             <Grid item xs={12} sm={6}>
-                                <TextField
+                                <FormControl
                                     fullWidth
-                                    label="First Name"
-                                    margin="normal"
-                                    name="firstName"
-                                    type="text"
-                                    value={values.firstName}
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
+                                    error={Boolean(touched.firstName && errors.firstName)}
                                     sx={{ ...theme.typography.customInput }}
-                                />
+                                >
+                                    <TextField
+                                        fullWidth
+                                        label="First Name"
+                                        margin="normal"
+                                        name="firstName"
+                                        type="text"
+                                        value={values.firstName}
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        error={Boolean(touched.firstName && errors.firstName)}
+                                    />
+                                    {touched.firstName && errors.firstName && <FormHelperText error>{errors.firstName}</FormHelperText>}
+                                </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <TextField
+                                <FormControl
                                     fullWidth
-                                    label="Last Name"
-                                    margin="normal"
-                                    name="lastName"
-                                    type="text"
-                                    value={values.lastName}
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
+                                    error={Boolean(touched.lastName && errors.lastName)}
                                     sx={{ ...theme.typography.customInput }}
-                                />
+                                >
+                                    <TextField
+                                        fullWidth
+                                        label="Last Name"
+                                        margin="normal"
+                                        name="lastName"
+                                        type="text"
+                                        value={values.lastName}
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        error={Boolean(touched.lastName && errors.lastName)}
+                                    />
+                                    {touched.lastName && errors.lastName && <FormHelperText error>{errors.lastName}</FormHelperText>}
+                                </FormControl>
                             </Grid>
                         </Grid>
+                        <FormControl
+                            fullWidth
+                            error={Boolean(touched.company_name && errors.company_name)}
+                            sx={{ ...theme.typography.customInput }}
+                        >
+                            <TextField
+                                fullWidth
+                                label="Company Name"
+                                margin="normal"
+                                name="company_name"
+                                type="text"
+                                value={values.company_name}
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                error={Boolean(touched.company_name && errors.company_name)}
+                            />
+                            {touched.company_name && errors.company_name && <FormHelperText error>{errors.company_name}</FormHelperText>}
+                        </FormControl>
                         <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
                             <InputLabel htmlFor="outlined-adornment-email-register">Email Address / Username</InputLabel>
                             <OutlinedInput
@@ -164,12 +219,28 @@ const JWTRegister = ({ ...others }) => {
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 inputProps={{}}
+                                disabled
                             />
                             {touched.email && errors.email && (
                                 <FormHelperText error id="standard-weight-helper-text--register">
                                     {errors.email}
                                 </FormHelperText>
                             )}
+                        </FormControl>
+
+                        <FormControl fullWidth error={Boolean(touched.mobile && errors.mobile)} sx={{ ...theme.typography.customInput }}>
+                            <TextField
+                                fullWidth
+                                label="Mobile"
+                                margin="normal"
+                                name="mobile"
+                                type="tel"
+                                value={values.mobile}
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                error={Boolean(touched.mobile && errors.mobile)}
+                            />
+                            {touched.mobile && errors.mobile && <FormHelperText error>{errors.mobile}</FormHelperText>}
                         </FormControl>
 
                         <FormControl

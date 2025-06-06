@@ -15,6 +15,10 @@ import userReducer from './slices/user';
 import cartReducer from './slices/cart';
 import kanbanReducer from './slices/kanban';
 import menuReducer from './slices/menu';
+import allJobsReducer from './slices/JobsSlices/allJobsSlice';
+import getJobByIDReducer from './slices/JobsSlices/getJobByID';
+import postJobSliceReducer from './slices/JobsSlices/postjobSlice';
+import PostJobFormDataSliceReducer from './slices/JobsSlices/postJobFormData';
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
@@ -36,7 +40,11 @@ const reducer = combineReducers({
     calendar: calendarReducer,
     mail: mailReducer,
     user: userReducer,
-    menu: menuReducer
+    menu: menuReducer,
+    allJobs: allJobsReducer,
+    getJobByID: getJobByIDReducer,
+    PostJobAPI: postJobSliceReducer,
+    PostJobFormDataAPI: PostJobFormDataSliceReducer
 });
 
 export default reducer;

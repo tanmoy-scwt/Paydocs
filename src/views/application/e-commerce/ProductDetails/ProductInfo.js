@@ -310,7 +310,7 @@ const ProductInfo = ({ product }) => {
                                                         name="size"
                                                         value={values.size}
                                                         onChange={handleChange}
-                                                        displayEmpty
+                                                        displayempty
                                                         inputProps={{ 'aria-label': 'Without label' }}
                                                     >
                                                         <MenuItem value="">

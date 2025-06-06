@@ -7,7 +7,7 @@ import LAYOUT_CONST from 'constant';
 import useConfig from 'hooks/useConfig';
 import LogoSection from '../LogoSection';
 // import SearchSection from './SearchSection';
-import MobileSection from './MobileSection';
+// import MobileSection from './MobileSection';
 import ProfileSection from './ProfileSection';
 // import LocalizationSection from './LocalizationSection';
 // import MegaMenuSection from './MegaMenuSection';
@@ -18,6 +18,8 @@ import { openDrawer } from 'store/slices/menu';
 
 // assets
 import { IconMenu2 } from '@tabler/icons';
+import useAuth from 'hooks/useAuth';
+import { useEffect, useState } from 'react';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -26,9 +28,23 @@ const Header = () => {
 
     const dispatch = useDispatch();
     const { drawerOpen } = useSelector((state) => state.menu);
+    const { user } = useAuth();
 
     const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
     const { layout } = useConfig();
+
+    const [greeting, setGreeting] = useState('');
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour >= 5 && hour < 12) return 'Good Morning';
+        if (hour >= 12 && hour < 17) return 'Good Afternoon';
+        if (hour >= 17 && hour < 21) return 'Good Evening';
+        return 'Good Night';
+    };
+
+    useEffect(() => {
+        setGreeting(getGreeting());
+    }, []);
 
     return (
         <>
@@ -74,13 +90,12 @@ const Header = () => {
                 <Typography
                     sx={{
                         color: theme.palette.mode === 'dark' ? theme.palette.paper : '#2B2D3B',
-                        fontSize: '24px',
-                        lineHeight: '28.8px',
+                        fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.125rem', lg: '24px' },
                         fontWeight: '600'
                     }}
                     variant="h1"
                 >
-                    Good Morning, James!
+                    {greeting}, {user?.first_name}!
                 </Typography>
             </Box>
             {/* <SearchSection /> */}
@@ -103,9 +118,9 @@ const Header = () => {
             <ProfileSection />
 
             {/* mobile header */}
-            <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+            {/* <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
                 <MobileSection />
-            </Box>
+            </Box> */}
         </>
     );
 };

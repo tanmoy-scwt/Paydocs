@@ -46,12 +46,26 @@ const ProfileSection = () => {
     const theme = useTheme();
     const { borderRadius } = useConfig();
     const navigate = useNavigate();
+    const [greeting, setGreeting] = useState('');
+    useEffect(() => {
+        const now = new Date();
+        const hour = now.getHours();
 
+        if (hour < 12) {
+            setGreeting('Good Morning');
+        } else if (hour >= 12 && hour < 17) {
+            setGreeting('Good Afternoon');
+        } else {
+            setGreeting('Good Evening');
+        }
+    }, []);
     // const [sdm, setSdm] = useState(true);
     // const [value, setValue] = useState('');
     // const [notification, setNotification] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const { logout, user } = useAuth();
+    // console.log(user, 'user');
+
     const [open, setOpen] = useState(false);
     /**
      * anchorRef is used on different components and specifying one type leads to other components throwing an error
@@ -60,6 +74,7 @@ const ProfileSection = () => {
     const handleLogout = async () => {
         try {
             await logout();
+            navigate('/');
         } catch (err) {
             console.error(err);
         }
@@ -162,10 +177,10 @@ const ProfileSection = () => {
                                     <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
                                         <Box sx={{ p: 2, pb: 0 }}>
                                             <Stack>
-                                                <Typography variant="h4">Good Morning1,</Typography>
+                                                <Typography variant="h4">{greeting},</Typography>
 
                                                 <Typography component="span" variant="h4" sx={{ fontWeight: 400, paddingTop: '0.5rem' }}>
-                                                    {user?.name}
+                                                    {user?.first_name}
                                                 </Typography>
 
                                                 {/* <Typography sx={{ paddingTop: '0.5rem' }} variant="subtitle2">

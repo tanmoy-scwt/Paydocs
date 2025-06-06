@@ -1,143 +1,141 @@
-import { useEffect, useState } from 'react';
-
-// material-ui
+import { useCallback, useEffect, useState } from 'react';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
-
-// project imports
-// import EarningCard from './EarningCard';
-// import PopularCard from './PopularCard';
-// import TotalOrderLineChartCard from './TotalOrderLineChartCard';
-// import TotalIncomeDarkCard from './TotalIncomeDarkCard';
-// import TotalIncomeLightCard from './TotalIncomeLightCard';
-// import TotalGrowthBarChart from './TotalGrowthBarChart';
-import { gridSpacing } from 'store/constant';
 import CompanyBoxCard from './CompanyBoxCard';
-// import ProjectTable from 'views/widget/Data/ProjectTable';
-// import SalesLineChartCard from 'ui-component/cards/SalesLineChartCard';
-// import chartData from '../../widget/Chart/chart-data';
-
-// import RevenueChartCard from 'views/widget/Chart/RevenueChartCard';
 import PopularCityChartCard from './PopularCityChartCard';
 import TotalJobPostBarChart from './TotalJobPostBarChart';
 import LatestJobsTable from './LatestJobsTable';
-
-// ==============================|| DEFAULT DASHBOARD ||============================== //
+import axiosServices from 'utils/axios';
+import useAuth from 'hooks/useAuth';
+import { gridSpacing } from 'store/constant';
 
 const Dashboard = () => {
     const [isLoading, setLoading] = useState(true);
+    const [dashboardData, setDashboardData] = useState('');
+    const [dashboardBarChat, setDashboardBarChat] = useState([]);
+    const { user } = useAuth();
 
-    const BAR_CHART_OBJ = {
-        1: [20, 80, 100, 240, 115, 110, 100, 300, 50, 22, 16, 80],
-        2: [35, 70, 120, 180, 90, 130, 85, 140, 60, 45, 30, 95],
-        3: [25, 60, 90, 210, 100, 95, 75, 110, 55, 40, 28, 70]
+    const fetchDetailsFromAPI = async () => {
+        try {
+            const API_PATH = user.user_role === 'user' ? '/dashboard' : '/admin/dashboard';
+            const response = await axiosServices.get(API_PATH);
+            const data = response?.data?.data;
+            if (response.data.status) {
+                setDashboardData(data);
+                setDashboardBarChat(data?.jobPostPerMonthArray);
+                setLoading(false);
+            }
+        } catch (error) {
+            console.log('Connection Failed! ' + error);
+        }
     };
-    const [data, setData] = useState(BAR_CHART_OBJ[1]);
 
-    // const successDark = theme.palette.success.dark;
-    // const orange = theme.palette.orange.main;
-    // const orangeDark = theme.palette.orange.dark;
+    const activeBarChart = useCallback(
+        (tabValue) => {
+            const fetchChartData = async () => {
+                try {
+                    const API_VALUE = tabValue === 'This Year' ? 'thisYear' : tabValue;
+                    const API_PATH =
+                        user.user_role === 'user' ? '/job-posts-per-month-by-year?year=' : '/admin/job-posts-per-month-by-year?year=';
+                    const response = await axiosServices.get(API_PATH + API_VALUE);
+                    const data = response?.data?.data;
+                    if (response?.data?.status) setDashboardBarChat(data?.jobPostPerMonthArray);
+                } catch (error) {
+                    console.log('Connection Failed! ' + error);
+                }
+            };
+            fetchChartData();
+        },
+        [user]
+    );
+
     useEffect(() => {
-        setLoading(false);
+        fetchDetailsFromAPI();
     }, []);
-
-    const activeBarChart = (tabIndex) => {
-        setData(BAR_CHART_OBJ[tabIndex]);
-    };
 
     return (
         <Grid container spacing={gridSpacing}>
+            {/* Company Overview */}
             <Grid item xs={12}>
-                <Typography
-                    component="h6"
-                    sx={{
-                        fontWeight: 500,
-                        fontSize: '22px',
-                        lineHeight: '19.2px',
-                        letterSpacing: '0%',
-                        marginBottom: '1rem'
-                    }}
-                >
-                    Total Companies
+                <Typography component="h6" sx={{ fontWeight: 500, fontSize: '22px', mb: '1rem' }}>
+                    {user?.user_role === 'user' && 'Top Companies'}
                 </Typography>
+
                 <Grid container spacing={gridSpacing}>
-                    <Grid item lg={6} md={6} sm={6} xs={12}>
-                        {/* <EarningCard isLoading={isLoading} /> */}
-                        <CompanyBoxCard isLoading={isLoading} />
-                    </Grid>
-                    <Grid item lg={6} md={6} sm={6} xs={12}>
-                        <CompanyBoxCard isLoading={isLoading} />
-                        {/* <TotalOrderLineChartCard isLoading={isLoading} /> */}
-                    </Grid>
-                    {/* <Grid item lg={4} md={12} sm={12} xs={12}>
-                        <Grid container spacing={gridSpacing}>
-                            <Grid item sm={6} xs={12} md={6} lg={12}>
-                                <TotalIncomeDarkCard isLoading={isLoading} />
-                            </Grid>
-                            <Grid item sm={6} xs={12} md={6} lg={12}>
-                                <TotalIncomeLightCard isLoading={isLoading} />
-                            </Grid>
-                        </Grid>
-                    </Grid> */}
+                    {user?.user_role === 'user'
+                        ? dashboardData?.totalJobPost || dashboardData?.totalJobApplication
+                            ? [
+                                  {
+                                      totalCount: `${dashboardData?.totalJobPost} Job Posted`,
+                                      titleName: 'Total Job Post'
+                                  },
+                                  {
+                                      totalCount: `${dashboardData?.totalJobApplication} Job Application`,
+                                      titleName: 'Total Job Application'
+                                  }
+                              ].map((companyDetails, index) => (
+                                  <Grid item key={index} xs={12} sm={6}>
+                                      <CompanyBoxCard isLoading={isLoading} companyDetails={companyDetails} />
+                                  </Grid>
+                              ))
+                            : [1, 2].map((_, index) => (
+                                  <Grid item key={index} xs={12} sm={6}>
+                                      <CompanyBoxCard isLoading={isLoading} />
+                                  </Grid>
+                              ))
+                        : dashboardData?.topCompanies?.length
+                        ? dashboardData.topCompanies.map((companyDetails, index) => (
+                              <Grid item key={index} xs={12} sm={6}>
+                                  <CompanyBoxCard isLoading={isLoading} companyDetails={companyDetails} />
+                              </Grid>
+                          ))
+                        : [1, 2].map((_, index) => (
+                              <Grid item key={index} xs={12} sm={6}>
+                                  <CompanyBoxCard isLoading={isLoading} />
+                              </Grid>
+                          ))}
                 </Grid>
             </Grid>
+
+            {/* Bar Chart */}
+            <Grid item xs={12}>
+                <TotalJobPostBarChart isLoading={isLoading} data={dashboardBarChat} activeBarChart={activeBarChart} />
+            </Grid>
+
+            {/* Table + Chart Row */}
             <Grid item xs={12}>
                 <Grid container spacing={gridSpacing}>
-                    <Grid item xs={12} md={12}>
-                        <TotalJobPostBarChart isLoading={isLoading} data={data} activeBarChart={activeBarChart} />
-                        {/* <TotalGrowthBarChart isLoading={isLoading} /> */}
-                    </Grid>
-                    {/* <Grid item xs={12} md={4}>
-                        <PopularCard isLoading={isLoading} />
-                    </Grid> */}
-                </Grid>
-            </Grid>
-            <Grid item xs={12}>
-                <Grid container spacing={gridSpacing} alignItems="stretch">
-                    <Grid item xs={12} lg={7} md={6} sx={{ paddingBottom: '0px' }}>
-                        <Card sx={{ height: '100%' }}>
-                            <CardContent
-                                sx={{
-                                    height: '100%',
-                                    padding: '0px',
-                                    '&:last-child': {
-                                        paddingBottom: '0px'
-                                    }
-                                }}
-                            >
-                                <LatestJobsTable title="Popular Jobs" isLoading={isLoading} />
+                    <Grid item xs={12} md={6} lg={7}>
+                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                            <CardContent sx={{ flexGrow: 1, padding: 0 }}>
+                                <LatestJobsTable title="Popular Jobs" isLoading={isLoading} popularJobs={dashboardData?.popularJobs} />
                             </CardContent>
                         </Card>
                     </Grid>
                     <Grid item xs={12} md={6} lg={5}>
-                        <Card sx={{ height: '100%', paddingBottom: '0rem' }}>
-                            <CardContent
-                                sx={{
-                                    height: '100%',
-                                    padding: '0px',
-                                    '&:last-child': {
-                                        paddingBottom: '0px'
-                                    }
-                                }}
-                            >
-                                <PopularCityChartCard isLoading={isLoading} />
+                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                            <CardContent sx={{ flexGrow: 1, padding: 0 }}>
+                                <PopularCityChartCard isLoading={isLoading} chartDataAPI={dashboardData?.topThreeCity} />
                             </CardContent>
                         </Card>
                     </Grid>
-
-                    <Box
-                        sx={{
-                            width: '100%',
-                            paddingTop: 2,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}
-                    >
-                        <Typography variant="body2" color="textSecondary">
-                            &copy; {new Date().getFullYear()} All copyrights reserved
-                        </Typography>
-                    </Box>
                 </Grid>
+            </Grid>
+
+            {/* Footer */}
+            <Grid item xs={12}>
+                <Box
+                    sx={{
+                        width: '100%',
+                        pt: 2,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                >
+                    <Typography variant="body2" color="textSecondary">
+                        &copy; {new Date().getFullYear()} All copyrights reserved
+                    </Typography>
+                </Box>
             </Grid>
         </Grid>
     );

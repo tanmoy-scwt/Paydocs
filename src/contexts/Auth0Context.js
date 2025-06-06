@@ -27,6 +27,7 @@ export const Auth0Provider = ({ children }) => {
     const [state, dispatch] = useReducer(accountReducer, initialState);
 
     useEffect(() => {
+        console.log('sadkljaskdkl');
         const init = async () => {
             try {
                 auth0Client = new Auth0Client({
@@ -39,9 +40,11 @@ export const Auth0Provider = ({ children }) => {
 
                 await auth0Client.checkSession();
                 const isLoggedIn = await auth0Client.isAuthenticated();
+                //yahi hai user
 
                 if (isLoggedIn) {
                     const user = await auth0Client.getUser();
+                    console.log(user, '{user');
 
                     dispatch({
                         type: LOGIN,
@@ -74,6 +77,7 @@ export const Auth0Provider = ({ children }) => {
 
         if (isLoggedIn) {
             const user = await auth0Client.getUser();
+
             dispatch({
                 type: LOGIN,
                 payload: {

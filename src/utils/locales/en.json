@@ -1,10 +1,18 @@
 {
+    "jobManagement": "Job Management",
+    "allUser": "All User",
+    "jobCategory": "All Categories",
+    "jobApplied": "Job Applied",
+
     "dashboard": "Dashboard",
     "default": "Default",
     "analytics": "Analytics",
     "profileManagement": "Profile Management",
     "jobListing": "Job Listing",
     "postAJob": "Post A Job",
+    "postedJobs": "Posted Jobs",
+    "jobApplication": "Job Application",
+    "totalApplicant": "Total Applicants",
 
     "widget": "Widget",
     "statistics": "Statistics",

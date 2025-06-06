@@ -4,155 +4,93 @@ import React from 'react';
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
 import { Avatar, Box, Grid, Typography } from '@mui/material';
-
-// project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonEarningCard from 'ui-component/cards/Skeleton/EarningCard';
-// assets
-import CompanyLogo from 'assets/images/icons/MLogo.png';
-// import MenuLogo from 'assets/images/icons/menu.svg';
-// import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-// import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-// import GetAppTwoToneIcon from '@mui/icons-material/GetAppOutlined';
-// import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
-// import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
-// import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
+import useAuth from 'hooks/useAuth';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.dark : theme.palette.paper,
-    // color: 'black',
-    color: theme.palette.mode === 'dark' ? theme.palette.secondary.dark : theme.palette.secondary.dark,
+    color: theme.palette.secondary.dark,
     overflow: 'hidden',
     position: 'relative'
 }));
 
-// ===========================|| DASHBOARD DEFAULT - EARNING CARD ||=========================== //
-
-const CompanyBoxCard = ({ isLoading }) => {
+const CompanyBoxCard = ({ isLoading, companyDetails }) => {
     const theme = useTheme();
-
-    // const [anchorEl, setAnchorEl] = React.useState(null);
-
-    // const handleClick = (event) => {
-    //     setAnchorEl(event.currentTarget);
-    // };
-
-    // const handleClose = () => {
-    //     setAnchorEl(null);
-    // };
-
-    return (
-        <>
-            {isLoading ? (
-                <SkeletonEarningCard />
-            ) : (
-                <CardWrapper border={false} content={false}>
-                    <Box sx={{ p: 2.25 }}>
-                        <Grid container direction="column">
+    const { user } = useAuth();
+    return isLoading ? (
+        <SkeletonEarningCard />
+    ) : (
+        <CardWrapper border={false} content={false}>
+            <Box sx={{ p: { xs: 2, sm: 2.25 } }}>
+                <Grid container direction="column">
+                    <Grid item>
+                        <Grid container justifyContent="space-between">
                             <Grid item>
-                                <Grid container justifyContent="space-between">
-                                    <Grid item>
-                                        <Avatar
-                                            variant="rounded"
-                                            sx={{
-                                                ...theme.typography.commonAvatar,
-                                                ...theme.typography.largeAvatar,
-                                                backgroundColor: '#fff',
-                                                mt: 1,
-                                                width: 83,
-                                                height: 83,
-                                                borderRadius: '50% !important'
-                                            }}
-                                        >
-                                            <img src={CompanyLogo} alt="Notification" />
-                                        </Avatar>
-                                    </Grid>
-                                    {/* <Grid item> */}
-                                    {/* <Avatar
-                                            variant="rounded"
-                                            //  borderRadius: '50%'
-                                            sx={{
-                                                ...theme.typography.commonAvatar,
-                                                ...theme.typography.mediumAvatar,
-                                                background:
-                                                    theme.palette.mode === 'dark'
-                                                        ? `linear-gradient(212.7deg, ${theme.palette.secondary.dark} 9.7%, #999999 342.68%)`
-                                                        : 'linear-gradient(212.7deg, #FFFFFF 9.7%, #999999 342.68%)',
+                                <Avatar
+                                    variant="rounded"
+                                    src={
+                                        companyDetails?.user_dtls?.profile_pic
+                                            ? `${process.env.REACT_APP_API_IMAGE_URL}/${companyDetails?.user_dtls?.profile_pic}`
+                                            : ''
+                                    }
+                                    sx={{
+                                        backgroundColor: '#fff',
+                                        mt: 1,
+                                        borderRadius: '50% !important',
+                                        width: { xs: 64, sm: 72, md: 83 },
+                                        height: { xs: 64, sm: 72, md: 83 }
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
 
-                                                color: theme.palette.secondary[200],
-                                                zIndex: 1,
-                                                width: 50,
-                                                height: 50
-                                            }}
-                                            aria-controls="menu-earning-card"
-                                            aria-haspopup="true"
-                                            onClick={handleClick}
-                                        >
-                                            <img src={MenuLogo} width={30} height={30} alt="Menu" />
-                                        </Avatar> */}
-                                    {/* <Menu
-                                            id="menu-earning-card"
-                                            anchorEl={anchorEl}
-                                            keepMounted
-                                            open={Boolean(anchorEl)}
-                                            onClose={handleClose}
-                                            variant="selectedMenu"
-                                            anchorOrigin={{
-                                                vertical: 'bottom',
-                                                horizontal: 'right'
-                                            }}
-                                            transformOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'right'
-                                            }}
-                                        >
-                                            <MenuItem onClick={handleClose}>
-                                                <GetAppTwoToneIcon sx={{ mr: 1.75 }} /> Import Card
-                                            </MenuItem>
-                                            <MenuItem onClick={handleClose}>
-                                                <FileCopyTwoToneIcon sx={{ mr: 1.75 }} /> Copy Data
-                                            </MenuItem>
-                                            <MenuItem onClick={handleClose}>
-                                                <PictureAsPdfTwoToneIcon sx={{ mr: 1.75 }} /> Export
-                                            </MenuItem>
-                                            <MenuItem onClick={handleClose}>
-                                                <ArchiveTwoToneIcon sx={{ mr: 1.75 }} /> Archive File
-                                            </MenuItem>
-                                        </Menu> */}
-                                    {/* </Grid> */}
-                                </Grid>
-                            </Grid>
+                    <Grid item>
+                        <Grid container alignItems="center">
                             <Grid item>
-                                <Grid container alignItems="center">
-                                    <Grid item>
-                                        <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                            Company Name
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item sx={{ mb: 1.25 }}>
                                 <Typography
                                     sx={{
-                                        fontSize: '1rem',
+                                        fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.125rem' },
                                         fontWeight: 500,
-                                        // color: '#061237',
-                                        color: theme.palette.mode === 'dark' ? '#ffff' : '#061237'
+                                        textTransform: 'capitalize',
+                                        mr: 1,
+                                        mt: 2,
+                                        mb: 1
                                     }}
                                 >
-                                    100+ Jobs Posted
+                                    {user?.user_role === 'user'
+                                        ? companyDetails?.user_dtls?.company_name
+                                            ? companyDetails?.user_dtls?.company_name
+                                            : 'Company Name'
+                                        : companyDetails?.user_dtls?.first_name
+                                        ? `${companyDetails?.user_dtls?.first_name} ${companyDetails?.user_dtls?.last_name}`
+                                        : 'Owner Name'}
                                 </Typography>
                             </Grid>
                         </Grid>
-                    </Box>
-                </CardWrapper>
-            )}
-        </>
+                    </Grid>
+
+                    <Grid item sx={{ mb: 1.25 }}>
+                        <Typography
+                            sx={{
+                                fontSize: { xs: '0.875rem', sm: '1rem' },
+                                fontWeight: 500,
+                                color: theme.palette.mode === 'dark' ? '#fff' : '#061237'
+                            }}
+                        >
+                            {companyDetails?.total_job_post ? `${companyDetails?.total_job_post} Jobs Posted` : companyDetails?.totalCount}
+                        </Typography>
+                    </Grid>
+                </Grid>
+            </Box>
+        </CardWrapper>
     );
 };
 
 CompanyBoxCard.propTypes = {
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
+    companyDetails: PropTypes.object
 };
 
 export default CompanyBoxCard;

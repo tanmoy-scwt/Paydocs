@@ -1,161 +1,165 @@
 import PropTypes from 'prop-types';
-import { Avatar, Box, Button, CardActions, Divider, Grid, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
-// import MainCard from 'ui-component/cards/MainCard';
-// import Company1 from 'assets/images/icons/logoplasan.png';
+import { Avatar, Box, Button, CardActions, Divider, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import building from 'assets/images/icons/building.svg';
 import watch from 'assets/images/icons/watch.svg';
 import salary from 'assets/images/icons/moneyCirculation.svg';
-import location from 'assets/images/icons/location.svg';
+import location_icon from 'assets/images/icons/location.svg';
 import bag from 'assets/images/icons/bag.svg';
 import { useTheme } from '@mui/system';
+import { memo, useCallback, useState } from 'react';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const JobPostBoxTable = ({ action, jobDetails }) => {
-    const { companylogo, companyName, companyDetails, companyAbout } = jobDetails;
-    const infoItems = [
-        { icon: building, text: companyDetails[0] },
-        { icon: watch, text: companyDetails[1] },
-        { icon: salary, text: companyDetails[2] },
-        { icon: bag, text: companyDetails[3] },
-        { icon: location, text: companyDetails[4] }
-    ];
+    const { company_logo, id, title, company_name, job_description, location, work_type, salary_to, salary_from, category_dtls } =
+        jobDetails;
     const theme = useTheme();
+    const [isViewMore, setViewMore] = useState(false);
+
+    const handleViewMore = useCallback(() => {
+        setViewMore((prev) => !prev);
+    }, []);
+
+    const infoItems = [
+        { icon: building, text: company_name || '' },
+        { icon: watch, text: work_type || '' },
+        { icon: bag, text: category_dtls?.job_category_name || 'category' },
+        {
+            icon: salary,
+            text: salary_to && salary_from ? `₹${Math.ceil(salary_from)} - ₹${Math.ceil(salary_to)} per month` : ''
+        },
+        { icon: location_icon, text: location || '' }
+    ];
+
     return (
         <>
             <Box
                 sx={{
                     display: 'flex',
-                    alignItems: 'flex-start',
-                    justifyContent: 'space-between',
+                    flexDirection: { xs: 'column', md: 'row' },
                     gap: 2,
-                    padding: 2,
+                    p: 2,
                     borderRadius: 1,
-                    // backgroundColor: '#FAFAFA'
-                    background: theme.palette.mode === 'dark' ? '' : '#fafafa'
+                    backgroundColor: theme.palette.mode === 'dark' ? 'inherit' : '#fafafa'
                 }}
             >
-                {/* Image */}
-                <Avatar
-                    variant="rounded"
+                <Box
                     sx={{
-                        ...theme.typography.commonAvatar,
-                        ...theme.typography.largeAvatar,
-                        backgroundColor: 'transparent',
-                        borderRadius: '50%',
-                        width: 70,
-                        height: 70,
-                        mt: 1
+                        display: 'flex',
+                        justifyContent: { xs: 'flex-start', md: 'flex-start' }
                     }}
                 >
-                    <img
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-                        src={companylogo != undefined ? companylogo : ''}
-                        alt="Notification"
+                    <Avatar
+                        variant="rounded"
+                        sx={{
+                            borderRadius: '50%',
+                            width: 70,
+                            height: 70,
+                            mt: { xs: 0, md: 1 },
+                            backgroundColor: !company_logo ? '#ccc' : 'transparent',
+                            border: !company_logo ? '1px solid #ccc' : 'none',
+                            mx: 0 // removes auto-centering
+                        }}
+                        src={company_logo ? `${process.env.REACT_APP_API_IMAGE_URL}/${company_logo}` : ''}
                     />
-                </Avatar>
-                {/* Text Content */}
-                <Box sx={{ flex: 1, mx: 2 }}>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <Typography component="h3" variant="body1" fontSize={18} fontWeight={600}>
-                            {companyName}
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                        <List
-                            sx={{
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                justifyContent: 'space-between',
-                                columnGap: '1rem',
-                                rowGap: '0rem',
-                                padding: 0
-                            }}
-                        >
-                            {infoItems?.map((item, index) => (
-                                <ListItem
-                                    key={index}
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        paddingX: 0,
-                                        paddingY: '0.5rem',
-                                        width: 'auto',
-                                        flexShrink: 0
-                                    }}
-                                >
-                                    <ListItemIcon
-                                        sx={{
-                                            width: 20,
-                                            height: 20,
-                                            minWidth: 'auto',
-                                            marginRight: '0.5rem'
-                                        }}
-                                    >
-                                        <img
-                                            src={item?.icon}
-                                            style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center' }}
-                                            alt="icon"
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={item?.text}
-                                        primaryTypographyProps={{
-                                            sx: {
-                                                fontSize: '12px',
-                                                whiteSpace: 'nowrap',
-                                                color: '#2B2D3B',
-                                                lineHeight: '20px'
-                                            }
-                                        }}
-                                        sx={{
-                                            margin: 0
-                                        }}
-                                    />
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Grid>
+                </Box>
 
-                    <Grid item xs={12} md={12} lg={12}>
-                        <Typography sx={{ color: '#697586', lineHeight: '20px' }} component="p" variant="body2" mt={1}>
-                            {companyAbout}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12} md={12} lg={12}>
-                        <CardActions sx={{ justifyContent: 'flex-start', padding: '0rem', paddingTop: '1rem' }}>
+                <Box sx={{ flex: 1 }}>
+                    <Typography component="h3" variant="body1" fontSize={18} fontWeight={600} mb={1}>
+                        {title || ''}
+                    </Typography>
+                    <List
+                        sx={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 1,
+                            justifyContent: { lg: 'space-between' },
+                            p: 0,
+                            mb: 1,
+                            width: { lg: '90%' }
+                        }}
+                    >
+                        {infoItems?.map((item, index) => (
+                            <ListItem
+                                key={index}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    px: 0,
+                                    py: 0.5,
+                                    width: 'auto'
+                                }}
+                            >
+                                <ListItemIcon sx={{ width: 20, height: 20, minWidth: 'auto', mr: 0.5 }}>
+                                    <img src={item.icon} style={{ width: '100%', height: '100%', objectFit: 'contain' }} alt="icon" />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={item.text}
+                                    primaryTypographyProps={{
+                                        sx: {
+                                            fontSize: '12px',
+                                            whiteSpace: 'nowrap',
+                                            color: '#2B2D3B',
+                                            lineHeight: '20px'
+                                        }
+                                    }}
+                                    sx={{ m: 0 }}
+                                />
+                            </ListItem>
+                        ))}
+                    </List>
+
+                    <Typography sx={{ color: '#697586', lineHeight: '20px' }} variant="body2">
+                        {job_description &&
+                            (!isViewMore && job_description.length > 365 ? `${job_description.slice(0, 300)}...` : job_description)}
+                    </Typography>
+
+                    {job_description?.length > 365 ? (
+                        <CardActions sx={{ p: 0, px: 0, pt: 1 }}>
                             <Button
-                                sx={{ justifyContent: 'flex-start', padding: '0rem', color: theme.palette.secondary.main }}
+                                onClick={handleViewMore}
+                                sx={{
+                                    color: theme.palette.secondary.main,
+                                    textTransform: 'capitalize'
+                                }}
                                 variant="text"
                                 size="small"
                             >
-                                View Details
+                                {isViewMore ? 'View Less' : 'View Details'}
                             </Button>
                         </CardActions>
-                    </Grid>
+                    ) : (
+                        <Box sx={{ padding: '1rem' }} />
+                    )}
                 </Box>
 
-                {/* Button */}
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', paddingY: '1rem' }}>
-                    <Button
-                        onClick={action}
-                        sx={{
-                            backgroundColor: theme.palette.secondary.main,
-                            '&:hover': {
-                                backgroundColor: theme.palette.secondary.dark
-                            }
-                        }}
-                        variant="contained"
-                        size="large"
-                    >
-                        Apply Now
-                    </Button>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'row', md: 'column' },
+                        justifyContent: 'flex-start',
+                        width: 'max-content',
+                        gap: 1,
+                        py: 0
+                    }}
+                >
+                    <AnimateButton sx={{ flex: 1 }}>
+                        <Button
+                            onClick={() => action(id)}
+                            sx={{
+                                backgroundColor: theme.palette.secondary.main,
+                                '&:hover': { backgroundColor: theme.palette.secondary.dark },
+                                textTransform: 'capitalize',
+                                width: '100%'
+                            }}
+                            variant="contained"
+                            size="large"
+                        >
+                            Apply Now
+                        </Button>
+                    </AnimateButton>
                 </Box>
             </Box>
-            <Divider
-                sx={{
-                    borderBottomWidth: '2px',
-                    color: '#BDBDBD'
-                }}
-            />
+            <Divider sx={{ borderBottomWidth: 2, color: '#BDBDBD' }} />
         </>
     );
 };
@@ -164,11 +168,16 @@ JobPostBoxTable.propTypes = {
     title: PropTypes.string,
     action: PropTypes.func.isRequired,
     jobDetails: PropTypes.shape({
-        companylogo: PropTypes.string.isRequired,
-        companyName: PropTypes.string.isRequired,
-        companyDetails: PropTypes.arrayOf(PropTypes.string).isRequired,
-        companyAbout: PropTypes.string.isRequired
+        company_logo: PropTypes.string,
+        company_name: PropTypes.string.isRequired,
+        job_description: PropTypes.string.isRequired,
+        title: PropTypes.string,
+        location: PropTypes.string,
+        work_type: PropTypes.string,
+        salary_to: PropTypes.string,
+        salary_from: PropTypes.string,
+        category_dtls: PropTypes.object
     })
 };
 
-export default JobPostBoxTable;
+export default memo(JobPostBoxTable);

@@ -193,21 +193,26 @@ const ProfileMangement = () => {
                             </Grid>
                             <Grid item>
                                 {value < 1 && (
-                                    <AnimateButton>
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                background: theme.palette.secondary.main,
-                                                '&:hover': {
-                                                    background: theme.palette.secondary.dark
-                                                }
-                                            }}
-                                            size="large"
-                                            onClick={(e) => handleChange(e, 1 + value)}
-                                        >
-                                            Continue
-                                        </Button>
-                                    </AnimateButton>
+                                    <>
+                                        <Grid container sx={{ gap: '1.5rem' }} spacing={0}>
+                                            <AnimateButton>
+                                                <Button
+                                                    variant="contained"
+                                                    sx={{
+                                                        background: theme.palette.secondary.main,
+                                                        border: `1px solid transparent`,
+                                                        '&:hover': {
+                                                            background: theme.palette.secondary.dark
+                                                        }
+                                                    }}
+                                                    size="large"
+                                                    onClick={(e) => handleChange(e, 1 + value)}
+                                                >
+                                                    Continue
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </>
                                 )}
                             </Grid>
                         </Grid>

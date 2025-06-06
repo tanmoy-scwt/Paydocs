@@ -91,7 +91,7 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
                         <FormControl>
                             <Select
                                 fullWidth
-                                displayEmpty
+                                displayempty
                                 value={selectedItem?.id || ''}
                                 onChange={handleChange}
                                 input={<OutlinedInput />}

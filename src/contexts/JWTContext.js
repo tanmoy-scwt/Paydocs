@@ -3,7 +3,7 @@ import { createContext, useEffect, useReducer } from 'react';
 
 // third-party
 import { Chance } from 'chance';
-import jwtDecode from 'jwt-decode';
+// import jwtDecode from 'jwt-decode';
 
 // reducer - state management
 import { LOGIN, LOGOUT } from 'store/actions';
@@ -26,19 +26,19 @@ const verifyToken = (serviceToken) => {
     if (!serviceToken) {
         return false;
     }
-    const decoded = jwtDecode(serviceToken);
-    /**
-     * Property 'exp' does not exist on type '<T = unknown>(token, options?: JwtDecodeOptions | undefined) => T'.
-     */
-    return decoded.exp > Date.now() / 1000;
+    return Date.now() < parseInt(serviceToken, 10);
 };
 
-const setSession = (serviceToken) => {
+const setSession = (serviceToken, expiryTime, userDetails) => {
     if (serviceToken) {
         localStorage.setItem('serviceToken', serviceToken);
+        localStorage.setItem('tokenExpiry', expiryTime);
+        localStorage.setItem('userDetails', userDetails);
         axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
     } else {
         localStorage.removeItem('serviceToken');
+        localStorage.removeItem('tokenExpiry');
+        localStorage.removeItem('userDetails');
         delete axios.defaults.headers.common.Authorization;
     }
 };
@@ -53,10 +53,13 @@ export const JWTProvider = ({ children }) => {
         const init = async () => {
             try {
                 const serviceToken = window.localStorage.getItem('serviceToken');
-                if (serviceToken && verifyToken(serviceToken)) {
-                    setSession(serviceToken);
-                    const response = await axios.get('/api/account/me');
-                    const { user } = response.data;
+                const serviceTokenExpiry = window.localStorage.getItem('tokenExpiry');
+                const userDetails = window.localStorage.getItem('userDetails');
+
+                if (serviceToken && verifyToken(serviceTokenExpiry)) {
+                    setSession(serviceToken, serviceTokenExpiry, userDetails);
+                    const user = JSON.parse(userDetails);
+
                     dispatch({
                         type: LOGIN,
                         payload: {
@@ -81,9 +84,16 @@ export const JWTProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        const response = await axios.post('/api/account/login', { email, password });
-        const { serviceToken, user } = response.data;
-        setSession(serviceToken);
+        const TOKEN_VALIDITY_DAYS = 7;
+        const response = await axios.post('/login', { email, password });
+        const { status } = response.data;
+        const { token, user } = response.data.data;
+
+        if (status === true) {
+            const expiryTime = (Date.now() + TOKEN_VALIDITY_DAYS * 24 * 60 * 60 * 1000).toString();
+            const userDetails = JSON.stringify(user);
+            setSession(token, expiryTime, userDetails);
+        }
         dispatch({
             type: LOGIN,
             payload: {
@@ -93,15 +103,18 @@ export const JWTProvider = ({ children }) => {
         });
     };
 
-    const register = async (email, password, firstName, lastName) => {
+    const register = async (firstName, lastName, company_name, email, mobile, password) => {
         // todo: this flow need to be recode as it not verified
         const id = chance.bb_pin();
-        const response = await axios.post('/api/account/register', {
-            id,
+        const response = await axios.post('/register', {
+            // id,
+            first_name: firstName,
+            last_name: lastName,
+            company_name,
             email,
+            mobile,
             password,
-            firstName,
-            lastName
+            password_confirmation: password
         });
         let users = response.data;
 
@@ -127,7 +140,11 @@ export const JWTProvider = ({ children }) => {
     };
 
     const resetPassword = async (email) => {
-        console.log(email);
+        const emailVerification = {
+            email: email,
+            send_otp_reason: 'emailVerification' //"resetPassword" or "emailVerification"
+        };
+        console.log(emailVerification);
     };
 
     const updateProfile = () => {};

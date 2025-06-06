@@ -352,7 +352,7 @@ const EditStory = ({ story, open, handleDrawerOpen }) => {
                                                                 <Select
                                                                     id="columnId"
                                                                     name="columnId"
-                                                                    displayEmpty
+                                                                    displayempty
                                                                     value={formik.values.columnId}
                                                                     onChange={formik.handleChange}
                                                                     inputProps={{ 'aria-label': 'Without label' }}

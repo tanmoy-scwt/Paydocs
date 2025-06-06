@@ -19,7 +19,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const TotalJobPostBarChart = ({ isLoading, data, activeBarChart }) => {
     const currentYear = new Date().getFullYear();
-    const openingYear = 2023;
+    const openingYear = 2025;
 
     const status = useMemo(() => {
         const years = Array.from({ length: currentYear - openingYear + 1 }, (_, index) => {
@@ -41,8 +41,6 @@ const TotalJobPostBarChart = ({ isLoading, data, activeBarChart }) => {
     const darkLight = theme.palette.dark.light;
     const grey200 = theme.palette.grey[200];
     const grey500 = theme.palette.grey[500];
-    // const max = Math.max(...data);
-    // const chartMax = Math.ceil(Math.max(...data) / 10) * 10 + 10;
 
     const chartData = useMemo(() => {
         const max = Math.max(...data);
@@ -167,7 +165,7 @@ const TotalJobPostBarChart = ({ isLoading, data, activeBarChart }) => {
             ApexCharts.exec('bar-chart', 'updateOptions', chartData.options);
         }
         if (selectedOption?.tab) {
-            activeBarChart(selectedOption.tab);
+            activeBarChart(selectedOption.label);
         }
     }, [selectedOption, isLoading]);
 
@@ -178,41 +176,52 @@ const TotalJobPostBarChart = ({ isLoading, data, activeBarChart }) => {
             ) : (
                 <MainCard>
                     <Grid container spacing={gridSpacing}>
-                        <Grid item xs={12}>
-                            <Grid container alignItems="center" justifyContent="space-between">
-                                <Grid item>
-                                    <Grid container direction="column" spacing={1}>
-                                        <Grid item>
-                                            <Typography sx={{ colors: theme.palette.mode === 'dark' ? '#fff' : '#2B2D3B' }} variant="h3">
-                                                Job Post per month
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                                <Grid item>
-                                    <TextField
-                                        id="select-status"
-                                        select
-                                        value={value}
-                                        onChange={handleSelectOptionYear}
-                                        SelectProps={{
-                                            renderValue: () => (
-                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                    <CalendarMonthIcon fontSize="small" />
-                                                    {selectedOption?.label}
-                                                </Box>
-                                            )
+                        <Grid paddingBottom="2rem" item xs={12}>
+                            <Grid container alignItems="center" spacing={{ xs: 2, md: 4 }}>
+                                {/* Left side - Typography */}
+                                <Grid item xs={12} md={6}>
+                                    <Typography
+                                        sx={{
+                                            color: theme.palette.mode === 'dark' ? '#fff' : '#2B2D3B',
+                                            whiteSpace: 'nowrap',
+                                            fontWeight: 600
                                         }}
+                                        variant="h3"
                                     >
-                                        {status?.map((option) => (
-                                            <MenuItem key={option?.value} value={option?.value}>
-                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>{option?.label}</Box>
-                                            </MenuItem>
-                                        ))}
-                                    </TextField>
+                                        Job Post per month
+                                    </Typography>
+                                </Grid>
+
+                                {/* Right side - Select */}
+                                <Grid item xs={12} md={6} justifyContent={'flex-end'} sx={{ display: { lg: 'flex' } }}>
+                                    <Box>
+                                        <TextField
+                                            fullWidth
+                                            id="select-status"
+                                            select
+                                            value={value}
+                                            onChange={handleSelectOptionYear}
+                                            SelectProps={{
+                                                renderValue: () => (
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                        <CalendarMonthIcon fontSize="small" />
+                                                        {selectedOption?.label}
+                                                    </Box>
+                                                )
+                                            }}
+                                        >
+                                            {status?.map((option) => (
+                                                <MenuItem key={option?.value} value={option?.value}>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>{option?.label}</Box>
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                    </Box>
                                 </Grid>
                             </Grid>
                         </Grid>
+
+                        {/* ✅ Add `item` prop here */}
                         <Grid
                             item
                             xs={12}

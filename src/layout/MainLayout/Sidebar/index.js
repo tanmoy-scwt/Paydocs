@@ -1,19 +1,11 @@
 import { memo, useMemo } from 'react';
-
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import { Box, Drawer, Stack, useMediaQuery } from '@mui/material';
-
-// third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
-// project imports
-// import MenuCard from './MenuCard';
 import MenuList from '../MenuList';
 import LogoSection from '../LogoSection';
 import MiniDrawerStyled from './MiniDrawerStyled';
 import Chip from 'ui-component/extended/Chip';
-
 import LAYOUT_CONST from 'constant';
 import useConfig from 'hooks/useConfig';
 import { drawerWidth } from 'store/constant';

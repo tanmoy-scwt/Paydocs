@@ -9,6 +9,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { useState } from 'react';
 import { useTheme } from '@mui/system';
+import useAuth from 'hooks/useAuth';
 
 // ==============================|| PROFILE 2 - USER PROFILE ||============================== //
 
@@ -41,21 +42,20 @@ const FillOutApplication = ({ action }) => {
             })
     });
 
+    const { user } = useAuth();
+
+    console.log(user);
+
     const dispatch = useDispatch();
 
     const formik = useFormik({
+        enableReinitialize: true,
         initialValues: {
-            emailInstant: '',
+            companyName: user ? user?.company_name : '',
+            emailInstant: user ? user?.email : '',
+            phoneNumber: user ? user?.mobile : '',
             jobTitleInstant: '',
-            passwordInstant: '',
-            jobLocation: '',
-            numberOfApplicants: '',
-            companyName: '',
-            phoneNumber: '',
             description: '',
-            workType: '',
-            category: '',
-            salaryRange: '',
             attachment: null
         },
         validationSchema,
@@ -246,14 +246,24 @@ const FillOutApplication = ({ action }) => {
                                 </Box>
                             </Grid>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Box
-                                sx={{
-                                    paddingX: 2.25,
-
-                                    borderRadius: 2
-                                }}
-                            >
+                        <Grid item sx={{ paddingX: '1rem', paddingY: '2rem' }} container spacing={gridSpacing}>
+                            <Grid item>
+                                <AnimateButton>
+                                    <Button
+                                        onClick={action}
+                                        type="button"
+                                        sx={{
+                                            border: `1px solid ${theme.palette.secondary.main}`,
+                                            color: theme.palette.secondary.main
+                                        }}
+                                        variant="outlined"
+                                        size="large"
+                                    >
+                                        Back
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item>
                                 <AnimateButton>
                                     <Button
                                         onClick={action}
@@ -261,8 +271,6 @@ const FillOutApplication = ({ action }) => {
                                         size="large"
                                         variant="contained"
                                         sx={{
-                                            mt: 2,
-                                            mb: 2,
                                             background: theme.palette.secondary.main,
                                             '&:hover': {
                                                 backgroundColor: theme.palette.secondary.dark
@@ -272,7 +280,7 @@ const FillOutApplication = ({ action }) => {
                                         Submit Now
                                     </Button>
                                 </AnimateButton>
-                            </Box>
+                            </Grid>
                         </Grid>
                     </form>
                 </MainCard>
