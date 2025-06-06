@@ -23,7 +23,8 @@ root.render(
     <Provider store={store}>
         <PersistGate loading={null} persistor={persister}>
             <ConfigProvider>
-                <BrowserRouter basename={process.env.REACT_APP_BASE_NAME}>
+                {/* <BrowserRouter basename={process.env.REACT_APP_BASE_NAME}> */}
+                <BrowserRouter basename={'/'}>
                     <App />
                 </BrowserRouter>
             </ConfigProvider>
