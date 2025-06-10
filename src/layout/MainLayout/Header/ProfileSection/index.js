@@ -34,7 +34,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
 // import UpgradePlanCard from './UpgradePlanCard';
 import useAuth from 'hooks/useAuth';
-import User1 from 'assets/images/users/user-round.svg';
+// import User1 from 'assets/images/users/user-round.svg';
 
 // assets
 import { IconLogout, IconSettings } from '@tabler/icons';
@@ -131,7 +131,7 @@ const ProfileSection = () => {
                 }}
                 icon={
                     <Avatar
-                        src={User1}
+                        src={process.env.REACT_APP_API_IMAGE_URL + '/' + user.profile_pic}
                         sx={{
                             ...theme.typography.mediumAvatar,
                             margin: '8px 0 8px 8px !important',
@@ -141,7 +141,7 @@ const ProfileSection = () => {
                         aria-controls={open ? 'menu-list-grow' : undefined}
                         aria-haspopup="true"
                         color="inherit"
-                        alt="user-account"
+                        // alt="user-account"
                     />
                 }
                 label={<IconSettings stroke={1.5} size="24px" color={theme.palette.primary.main} />}
