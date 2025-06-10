@@ -142,7 +142,15 @@ const EditCurrentJobAdmin = () => {
                                             id="user_id"
                                             name="user_id"
                                             value={formik.values.user_id}
-                                            onChange={(e) => formik.setFieldValue('user_id', Number(e.target.value))}
+                                            // onChange={(e) => formik.setFieldValue('user_id', Number(e.target.value))}
+                                            onChange={(e) => {
+                                                const selectedUserId = Number(e.target.value);
+                                                const selectedUser = adminUserList.find((user) => user.id === selectedUserId);
+                                                formik.setFieldValue('user_id', selectedUserId);
+                                                if (selectedUser) {
+                                                    formik.setFieldValue('company_name', selectedUser.company_name || '');
+                                                }
+                                            }}
                                             onBlur={formik.handleBlur}
                                             label="User ID"
                                         >
@@ -150,7 +158,7 @@ const EditCurrentJobAdmin = () => {
                                                 !adminUserListError &&
                                                 adminUserList?.map((option) => (
                                                     <MenuItem key={option.id} value={option.id}>
-                                                        {option?.first_name} {option?.email}
+                                                        {option?.first_name} {option?.last_name} ({option?.email})
                                                     </MenuItem>
                                                 ))}
                                         </Select>

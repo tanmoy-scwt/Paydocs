@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { CardContent, Typography, Grid, Divider, Button, Stack } from '@mui/material';
+import { CardContent, Typography, Grid, Divider, Button, Stack, IconButton, Tooltip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useTheme } from '@mui/system';
+import { Box, useTheme } from '@mui/system';
 import { useSelector } from 'store';
 import ApplicationDetailsShimmer from 'ui-component/cards/Skeleton/ApplicationDetailsShimmer';
 import { useDispatch } from 'store';
@@ -10,6 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { fetchSelectedJobByIDFromAPI } from 'store/jobThunks/jobThunks';
 import MainCard from 'ui-component/cards/MainCard';
 import useCrypto from 'hooks/useCrypto';
+import DownloadIcon from '@mui/icons-material/Download';
 
 const ApplicationDetails = () => {
     const theme = useTheme();
@@ -168,7 +169,36 @@ const ApplicationDetails = () => {
                                     <Typography variant="subtitle2" gutterBottom>
                                         Attached File
                                     </Typography>
-                                    <Typography variant="body1">{application?.attachedFile}</Typography>
+                                    {/* <Typography variant="body1">{application?.attachedFile}</Typography> */}
+                                    {application?.attachedFile !== 'N/A' ? (
+                                        <Grid item>
+                                            <Tooltip title="Download">
+                                                <IconButton
+                                                    component="a"
+                                                    href={`${process.env.REACT_APP_API_IMAGE_URL}/${application.attachedFile}`}
+                                                    download
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    size="small"
+                                                    sx={{
+                                                        '&:hover': {
+                                                            backgroundColor: 'transparent' // Remove hover background
+                                                        },
+                                                        padding: 0 // Optional: remove extra spacing
+                                                    }}
+                                                >
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                                        <DownloadIcon fontSize="small" />
+                                                        <Typography variant="caption">Download Attachment</Typography>
+                                                    </Box>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    ) : (
+                                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                                            {application?.attachedFile}
+                                        </Typography>
+                                    )}
                                 </Grid>
                             </Grid>
                         </Grid>

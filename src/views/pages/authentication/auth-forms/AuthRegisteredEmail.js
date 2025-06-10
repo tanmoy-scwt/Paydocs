@@ -18,6 +18,7 @@ const AuthRegisteredEmail = ({ ...others }) => {
     const navigate = useNavigate();
     const [myEmail, setMyEmail] = useState('');
     const [resendDisabled, setResendDisabled] = useState(false);
+    const [resendBtnDisabled, setResendBtnDisabled] = useState(false);
     const [counter, setCounter] = useState(60);
 
     const [showOtpField, setShowOtpField] = useState(false);
@@ -29,6 +30,7 @@ const AuthRegisteredEmail = ({ ...others }) => {
                     if (prevCounter <= 1) {
                         clearInterval(timer);
                         setResendDisabled(false);
+                        setResendBtnDisabled(false);
                         return 30;
                     }
                     return prevCounter - 1;
@@ -59,45 +61,71 @@ const AuthRegisteredEmail = ({ ...others }) => {
                             email: values.email,
                             send_otp_reason: 'emailVerification' //"resetPassword" or "emailVerification"
                         };
-                        await dispatch(postJobAPIJSON({ API_PATH: '/send-otp', body: emailVerification })).then((response) => {
-                            console.log(response);
-                            if (response?.payload?.status) {
-                                setStatus({ success: true });
-                                setSubmitting(false);
-                                setMyEmail(values.email);
+                        await dispatch(postJobAPIJSON({ API_PATH: '/send-otp', body: emailVerification }))
+                            .unwrap()
+                            .then((response) => {
+                                console.log(response);
+                                if (response?.status) {
+                                    setStatus({ success: true });
+                                    setSubmitting(false);
+                                    setMyEmail(values.email);
+                                    setShowOtpField(true);
+                                }
                                 dispatch(
                                     openSnackbar({
                                         open: true,
-                                        message: 'Check mail for reset password OTP',
+                                        message: response?.message || '',
                                         variant: 'alert',
                                         alert: { color: 'success' },
                                         close: false
                                     })
                                 );
-                                setShowOtpField(true);
-                            }
-                        });
+                            })
+                            .catch((error) => {
+                                dispatch(
+                                    openSnackbar({
+                                        open: true,
+                                        message: error?.message || '',
+                                        variant: 'alert',
+                                        alert: { color: 'error' },
+                                        close: false
+                                    })
+                                );
+                            });
                     } else {
                         // Step 2: Submit OTP (implement your OTP verify logic here)
                         console.log('Entered OTP:', values);
-                        await dispatch(postJobAPIJSON({ API_PATH: '/verify-otp', body: values })).then((response) => {
-                            console.log(response);
-                            if (response?.payload?.status) {
-                                setStatus({ success: true });
-                                setSubmitting(false);
+                        await dispatch(postJobAPIJSON({ API_PATH: '/verify-otp', body: values }))
+                            .unwrap()
+                            .then((response) => {
+                                console.log(response);
+                                if (response?.status) {
+                                    setStatus({ success: true });
+                                    setSubmitting(false);
+                                    navigate(`/register?email=${values.email}`);
+                                    setShowOtpField(true);
+                                }
                                 dispatch(
                                     openSnackbar({
                                         open: true,
-                                        message: 'Your OTP has been successfully verified!',
+                                        message: response?.message || '',
                                         variant: 'alert',
                                         alert: { color: 'success' },
                                         close: false
                                     })
                                 );
-                                navigate(`/register?email=${values.email}`);
-                                setShowOtpField(true);
-                            }
-                        });
+                            })
+                            .catch((error) => {
+                                dispatch(
+                                    openSnackbar({
+                                        open: true,
+                                        message: error?.message || '',
+                                        variant: 'alert',
+                                        alert: { color: 'error' },
+                                        close: false
+                                    })
+                                );
+                            });
                         // Navigate or call verify API
                     }
                 } catch (err) {
@@ -167,28 +195,42 @@ const AuthRegisteredEmail = ({ ...others }) => {
                                             email: myEmail,
                                             send_otp_reason: 'emailVerification'
                                         };
-                                        await dispatch(postJobAPIJSON({ API_PATH: '/send-otp', body: emailVerification })).then(
-                                            (response) => {
-                                                if (response?.payload?.status) {
-                                                    dispatch(
-                                                        openSnackbar({
-                                                            open: true,
-                                                            message: 'Check mail for reset password OTP',
-                                                            variant: 'alert',
-                                                            alert: { color: 'success' },
-                                                            close: false
-                                                        })
-                                                    );
+                                        setResendBtnDisabled(true);
+                                        await dispatch(postJobAPIJSON({ API_PATH: '/send-otp', body: emailVerification }))
+                                            .unwrap()
+                                            .then((response) => {
+                                                console.log(response, 'response');
+                                                if (response?.status) {
                                                     setShowOtpField(true);
                                                     setResendDisabled(true);
                                                     setCounter(30); // start counter from 30
                                                 }
-                                            }
-                                        );
+                                                dispatch(
+                                                    openSnackbar({
+                                                        open: true,
+                                                        message: response?.message || '',
+                                                        variant: 'alert',
+                                                        alert: { color: 'success' },
+                                                        close: false
+                                                    })
+                                                );
+                                            })
+                                            .catch((error) => {
+                                                dispatch(
+                                                    openSnackbar({
+                                                        open: true,
+                                                        message: error?.message || '',
+                                                        variant: 'alert',
+                                                        alert: { color: 'error' },
+                                                        close: false
+                                                    })
+                                                );
+                                            });
                                     }}
-                                    disabled={resendDisabled}
+                                    disabled={resendBtnDisabled}
                                 >
-                                    {resendDisabled ? `Resend OTP (${counter}s)` : 'Resend OTP'}
+                                    {resendBtnDisabled ? (resendDisabled ? `Resend OTP (${counter}s)` : 'Sending OTP...') : 'Resend OTP'}
+                                    {/* {resendDisabled ? `Resend OTP (${counter}s)` : 'Resend OTP'} */}
                                 </Button>
                             </Box>
                         </>

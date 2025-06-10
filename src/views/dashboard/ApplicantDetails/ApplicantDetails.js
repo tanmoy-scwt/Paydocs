@@ -49,7 +49,7 @@ const ApplicantDetails = ({ applicant }) => {
                         <strong>Applied Date:</strong> {new Date(applicant?.created_at).toLocaleString() || 'N/A'}
                     </Typography>
 
-                    {applicant?.supported_doc && (
+                    {applicant?.supported_doc !== 'null' ? (
                         <Box sx={{ mt: 2 }}>
                             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
                                 <strong>Document:</strong>&nbsp;
@@ -66,6 +66,8 @@ const ApplicantDetails = ({ applicant }) => {
                                 </IconButton>
                             </Typography>
                         </Box>
+                    ) : (
+                        <strong>Document: N/A</strong>
                     )}
                 </AccordionDetails>
             </Accordion>

@@ -37,8 +37,6 @@ const work_types = workTypesData;
 const validationSchema = userPostJobValidation;
 const PostAJob = () => {
     const { user } = useAuth();
-    console.log(user);
-
     const { categories, loadingCategory, categoryError } = useJobCategoryList('/job-category-list');
     const { isLoadingFormData } = useSelector((state) => state.PostJobFormDataAPI);
     const theme = useTheme();
@@ -103,7 +101,7 @@ const PostAJob = () => {
                 {loadingCategory ? (
                     <EditPageSkeleton />
                 ) : (
-                    <MainCard title="Share Your Hiring Needs2" content={false}>
+                    <MainCard title="Share Your Hiring Needs" content={false}>
                         <Divider />
                         <form onSubmit={formik.handleSubmit}>
                             <Grid container spacing={gridSpacing} sx={{ paddingX: '1rem', paddingY: '2rem' }}>

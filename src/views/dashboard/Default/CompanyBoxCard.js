@@ -60,9 +60,7 @@ const CompanyBoxCard = ({ isLoading, companyDetails }) => {
                                     }}
                                 >
                                     {user?.user_role === 'user'
-                                        ? companyDetails?.user_dtls?.company_name
-                                            ? companyDetails?.user_dtls?.company_name
-                                            : 'Company Name'
+                                        ? companyDetails?.titleName
                                         : companyDetails?.user_dtls?.first_name
                                         ? `${companyDetails?.user_dtls?.first_name} ${companyDetails?.user_dtls?.last_name}`
                                         : 'Owner Name'}

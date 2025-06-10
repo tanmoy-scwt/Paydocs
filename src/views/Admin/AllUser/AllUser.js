@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'store';
-import { fetchAllJobsFromAPI, fetchSelectedJobByIDFromAPI } from 'store/jobThunks/jobThunks';
+import { fetchAllJobsFromAPI } from 'store/jobThunks/jobThunks';
 import { clearJobData } from 'store/slices/JobsSlices/allJobsSlice';
 import MainCard from 'ui-component/cards/MainCard';
 import TableSkeleton from 'ui-component/cards/Skeleton/TableSkeleton';
@@ -32,28 +32,19 @@ const AllUser = () => {
     ];
 
     const rows =
-        allJobs && allJobs?.data?.data?.length > 0
-            ? allJobs?.data?.data?.map((job) => {
-                  const jobObj = {
-                      jobID: job?.id,
-                      ownerName: `${job?.first_name} ${job?.last_name}`,
-                      companyName: job?.company_name,
-                      email: job?.email,
-                      mobile: job?.mobile,
-                      jobPublished: job?.created_at
-                  };
-                  return jobObj;
-              })
-            : [
-                  {
-                      jobTitle: '--',
-                      companyName: '--',
-                      location: '--',
-                      email: '--',
-                      phoneNo: '--',
-                      appliedDate: '--'
-                  }
-              ];
+        allJobs &&
+        allJobs?.data?.data?.length > 0 &&
+        allJobs?.data?.data?.map((job) => {
+            const jobObj = {
+                jobID: job?.id,
+                ownerName: `${job?.first_name} ${job?.last_name}`,
+                companyName: job?.company_name,
+                email: job?.email,
+                mobile: job?.mobile,
+                jobPublished: job?.created_at
+            };
+            return jobObj;
+        });
     useEffect(() => {
         dispatch(fetchAllJobsFromAPI({ API_PATH: '/admin/user-list', params: { page: page } }));
         return () => {
@@ -63,16 +54,15 @@ const AllUser = () => {
 
     const handleViewButton = (id) => {
         console.log(id, 'handle VB');
-
         const USER_ID = encrypt(id);
         navigate(`/all-user/${USER_ID}`);
-        dispatch(fetchSelectedJobByIDFromAPI(`/admin/user-details/${id}`));
+        // dispatch(fetchSelectedJobByIDFromAPI(`/admin/user-details/${id}`));
     };
 
     const handlePageChange = useCallback(
         (event, value) => {
             setPage(value);
-            navigate(`/job-management?page=${value}`);
+            navigate(`/all-user?page=${value}`);
         },
         [page]
     );

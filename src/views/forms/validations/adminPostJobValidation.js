@@ -28,9 +28,7 @@ const adminPostJobValidation = yup.object({
 
     email_address: yup.string().email('Enter a valid email').required('Email is required'),
 
-    // phone_number: yup
-    //     .string()
-    //     .matches(/^[0-9+\s-]{10,15}$/, 'Enter a valid phone number')
+    phone_number: yup.string().matches(/^\d{10}$/, 'Enter a valid 10-digit phone number'),
     //     .required('Phone number is required'),
 
     job_description: yup.string().min(10, 'Description should be at least 10 characters').required('Job description is required'),

@@ -1,17 +1,13 @@
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
-import { Box, Grid, Skeleton, Typography, useMediaQuery } from '@mui/material';
+import { Box, Grid, Skeleton, Typography } from '@mui/material';
 import Chart from 'react-apexcharts';
-// import useConfig from 'hooks/useConfig';
 import MainCard from 'ui-component/cards/MainCard';
-// import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+
 const PopularCityChartCard = ({ isLoading, chartDataAPI }) => {
     const theme = useTheme();
-    // const { rtlLayout } = useConfig();
-    const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
-    const matchDownXs = useMediaQuery(theme.breakpoints.down('sm'));
-    const values = chartDataAPI ? chartDataAPI?.map((item) => item?.jobPostPercentage) : [0, 0, 0];
-    const labels = chartDataAPI ? chartDataAPI?.map((item) => item?.city) : ['---', '---', '---'];
+    const values = chartDataAPI ? chartDataAPI.map((item) => item?.jobPostPercentage) : [0, 0, 0];
+    const labels = chartDataAPI ? chartDataAPI.map((item) => item?.city) : ['---', '---', '---'];
     const total = values.reduce((a, b) => a + b, 0);
     const percentages = values.map((v) => (isNaN(((v / total) * 100).toFixed(1)) ? 0 : ((v / total) * 100).toFixed(1)));
 
@@ -28,10 +24,6 @@ const PopularCityChartCard = ({ isLoading, chartDataAPI }) => {
             show: true,
             position: 'bottom',
             fontFamily: 'inherit',
-            labels: {
-                positions: 'relative',
-                colors: 'inherit'
-            },
             itemMargin: {
                 horizontal: 10,
                 vertical: 10
@@ -62,105 +54,71 @@ const PopularCityChartCard = ({ isLoading, chartDataAPI }) => {
         }
     };
 
+    const labelStyles = {
+        fontSize: 'clamp(0.65rem, 0.9vw, 0.85rem)',
+        lineHeight: 1.2,
+        width: '60px',
+        textAlign: 'center',
+        wordWrap: 'break-word'
+    };
+
     return (
         <MainCard title="Top Three City" isLoading={isLoading}>
             {isLoading ? (
-                <Skeleton variant="rectangle" width={380} height={300} />
+                <Skeleton variant="rectangular" width="100%" height={300} />
             ) : (
-                <Grid
-                    sx={{
-                        margin: '0rem',
-                        width: '100%',
-
-                        height: '100%'
-                    }}
-                    container
-                    spacing={2}
-                    direction={matchDownMd && !matchDownXs ? 'row' : 'column'}
-                >
-                    <Box sx={{ position: 'relative', paddingY: '0rem' }}>
-                        <Grid
-                            item
-                            xs={12}
-                            sm={7}
-                            md={12}
-                            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0rem' }}
-                        >
+                <Grid container spacing={2} direction="column" sx={{ margin: 0, width: '100%', height: '100%' }}>
+                    <Box sx={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 0 }}>
                             <Chart options={chartOptions} series={chartOptions.series} type="donut" width={300} height={300} />
                         </Grid>
+
+                        {/* Label 3rd - Top Left */}
                         <Typography
-                            variant="h6"
+                            variant="body2"
                             sx={{
                                 position: 'absolute',
-                                top: '0%',
+                                top: '-5%',
                                 left: '5%',
-                                fontSize: '16px',
-                                lineHeight: '21px',
                                 color: theme.palette.secondary.main,
-                                cursor: 'pointer',
-                                textAlign: 'center'
+                                ...labelStyles
                             }}
                         >
                             {percentages[2]}%<br />
                             {labels[2]}
                         </Typography>
 
+                        {/* Label 1st - Right Middle */}
                         <Typography
-                            variant="h6"
+                            variant="body2"
                             sx={{
                                 position: 'absolute',
-                                right: '5%',
+                                right: '4%',
                                 top: '50%',
-                                // transform: 'translateY(-50%)',
-                                fontSize: '16px',
-                                lineHeight: '21px',
+                                transform: 'translateY(-50%)',
                                 color: theme.palette.success.dark,
-                                cursor: 'pointer',
-                                textAlign: 'center'
+                                ...labelStyles
                             }}
                         >
-                            {percentages[0]}% <br /> {labels[0]}
+                            {percentages[0]}%<br />
+                            {labels[0]}
                         </Typography>
 
+                        {/* Label 2nd - Bottom Left */}
                         <Typography
-                            variant="h6"
+                            variant="body2"
                             sx={{
                                 position: 'absolute',
-                                left: '5%',
-                                bottom: '8%',
-                                transform: 'translateY(-50%)',
-                                fontSize: '16px',
-                                lineHeight: '21px',
+                                left: '2%',
+                                bottom: '30%',
                                 color: theme.palette.primary.main,
-                                cursor: 'pointer',
-                                textAlign: 'center'
+                                ...labelStyles
                             }}
                         >
                             {percentages[1]}%<br />
                             {labels[1]}
                         </Typography>
                     </Box>
-                    {/* <Box sx={{ mt: 2 }}>
-                    <Grid
-                        item
-                        xs={12}
-                        sm={7}
-                        md={12}
-                        sx={{
-                            display: 'flex',
-                            gap: '0.4rem',
-                            background: '#F4F6F9',
-                            paddingY: '1rem',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}
-                    >
-                        <CalendarMonthIcon fontSize="small" />
-                        <Typography component="p" variant="body2" color={'#2B2D3B'} fontWeight={500}>
-                            01 January 2024 to 31 December 2024
-                        </Typography>
-                    </Grid>
-                </Box> */}
                 </Grid>
             )}
         </MainCard>
@@ -168,7 +126,8 @@ const PopularCityChartCard = ({ isLoading, chartDataAPI }) => {
 };
 
 PopularCityChartCard.propTypes = {
-    chartData: PropTypes.object
+    isLoading: PropTypes.bool,
+    chartDataAPI: PropTypes.array
 };
 
 export default PopularCityChartCard;

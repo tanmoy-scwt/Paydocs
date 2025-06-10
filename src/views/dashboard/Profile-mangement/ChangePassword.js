@@ -7,11 +7,12 @@ import { gridSpacing } from 'store/constant';
 import { postJobAPIJSON } from 'store/jobThunks/jobThunks';
 import { useDispatch } from 'store';
 import { openSnackbar } from 'store/slices/snackbar';
+import { useSelector } from 'store';
 
 const ChangePassword = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-
+    const { isLoadingPOST } = useSelector((state) => state.PostJobAPI);
     const validationSchema = Yup.object().shape({
         currentPassword: Yup.string().required('Current password is required'),
         newPassword: Yup.string()
@@ -40,34 +41,38 @@ const ChangePassword = () => {
                     newpassword: values.newPassword
                 };
                 console.log('Password Change Submitted:', values);
-                await dispatch(postJobAPIJSON({ API_PATH: '/change-password', body: passwordObj })).then((response) => {
-                    console.log(response);
-                    if (response?.payload?.status) {
-                        setStatus({ success: true });
-                        setSubmitting(false);
-                        setMyEmail(values.email);
+                await dispatch(postJobAPIJSON({ API_PATH: '/change-password', body: passwordObj }))
+                    .unwrap()
+                    .then((response) => {
+                        console.log(response);
+                        if (response?.payload?.status) {
+                            setStatus({ success: true });
+                            setSubmitting(false);
+                            setMyEmail(values.email);
+                            setShowOtpField(true);
+                        }
                         dispatch(
                             openSnackbar({
                                 open: true,
-                                message: 'Password Changed Successfully',
+                                message: response?.message,
                                 variant: 'alert',
                                 alert: { color: 'success' },
                                 close: false
                             })
                         );
-                        setShowOtpField(true);
-                    }
-                    dispatch(
-                        openSnackbar({
-                            open: true,
-                            message: '',
-                            variant: 'alert',
-                            alert: { color: 'error' },
-                            close: false
-                        })
-                    );
-                });
-                setSubmitting(false);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        dispatch(
+                            openSnackbar({
+                                open: true,
+                                message: error?.message,
+                                variant: 'alert',
+                                alert: { color: 'error' },
+                                close: false
+                            })
+                        );
+                    });
                 // Dispatch API call here
             }}
         >
@@ -132,7 +137,7 @@ const ChangePassword = () => {
                                             color: theme.palette.secondary.main
                                         }}
                                     >
-                                        Change Password
+                                        {isLoadingPOST ? 'Changing...' : 'Change Password'}
                                     </Button>
                                 </AnimateButton>
                             </Stack>

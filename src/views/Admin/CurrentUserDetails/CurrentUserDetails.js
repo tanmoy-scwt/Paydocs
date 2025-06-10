@@ -59,7 +59,7 @@ const CurrentUserDetails = () => {
                 >
                     <Avatar
                         alt={`${CURRENT_USER?.first_name || ''} ${CURRENT_USER?.last_name || ''}`}
-                        src={CURRENT_USER?.profile_pic}
+                        src={`${process.env.REACT_APP_API_IMAGE_URL}/${CURRENT_USER?.profile_pic}`}
                         sx={{
                             width: { xs: 90, sm: 90 },
                             height: { xs: 90, sm: 90 },
@@ -71,9 +71,9 @@ const CurrentUserDetails = () => {
                             {CURRENT_USER?.first_name} {CURRENT_USER?.last_name}
                         </Typography>
 
-                        <Typography color="text.secondary" mt={0.5}>
+                        {/* <Typography color="text.secondary" mt={0.5}>
                             Role: <strong>{CURRENT_USER?.user_role}</strong>
-                        </Typography>
+                        </Typography> */}
 
                         <Typography color="text.secondary" mt={0.5}>
                             Company: <strong>{CURRENT_USER?.company_name}</strong>
@@ -106,7 +106,8 @@ const CurrentUserDetails = () => {
                         <Typography variant="subtitle2" color="text.secondary">
                             Email Verified
                         </Typography>
-                        <Typography>{CURRENT_USER?.email_verified_at ? 'Yes' : 'No'}</Typography>
+                        {/* <Typography>{CURRENT_USER?.email_verified_at ? 'Yes' : 'No'}</Typography> */}
+                        <Typography>Yes</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <Typography variant="subtitle2" color="text.secondary">

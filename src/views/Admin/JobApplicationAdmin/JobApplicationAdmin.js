@@ -36,30 +36,22 @@ const JobApplicationAdmin = () => {
     ];
 
     const rows =
-        allJobs && allJobs?.data?.data?.length > 0
-            ? allJobs?.data?.data?.map((job) => {
-                  const jobObj = {
-                      jobID: job?.id,
-                      jobTitle: job?.title,
-                      companyName: job?.company_name,
-                      location: job?.location,
-                      email: job?.email_address,
-                      phoneNo: job?.phone_number,
-                      applicationListCount: job?.application_list_count,
-                      appliedDate: job?.created_at
-                  };
-                  return jobObj;
-              })
-            : [
-                  {
-                      jobTitle: '--',
-                      companyName: '--',
-                      location: '--',
-                      email: '--',
-                      phoneNo: '--',
-                      appliedDate: '--'
-                  }
-              ];
+        allJobs &&
+        allJobs?.data?.data?.length > 0 &&
+        allJobs?.data?.data?.map((job) => {
+            const jobObj = {
+                jobID: job?.id,
+                jobTitle: job?.title,
+                companyName: job?.company_name,
+                location: job?.location,
+                email: job?.email_address,
+                phoneNo: job?.phone_number,
+                applicationListCount: job?.application_list_count,
+                appliedDate: job?.created_at
+            };
+            return jobObj;
+        });
+
     useEffect(() => {
         dispatch(
             fetchAllJobsFromAPI({
@@ -81,7 +73,7 @@ const JobApplicationAdmin = () => {
     const handlePageChange = useCallback(
         (event, value) => {
             setPage(value);
-            navigate(`/job-management?page=${value}`);
+            navigate(`/admin-job-application?page=${value}`);
         },
         [page]
     );

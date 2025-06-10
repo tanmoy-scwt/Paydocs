@@ -1,19 +1,15 @@
 import PropTypes from 'prop-types';
 import { createContext, useEffect, useReducer } from 'react';
 
-// third-party
-import { Chance } from 'chance';
 // import jwtDecode from 'jwt-decode';
 
 // reducer - state management
-import { LOGIN, LOGOUT } from 'store/actions';
+import { LOGIN, LOGOUT, UPDATE_USER } from 'store/actions';
 import accountReducer from 'store/accountReducer';
 
 // project imports
 import Loader from 'ui-component/Loader';
 import axios from 'utils/axios';
-
-const chance = new Chance();
 
 // constant
 const initialState = {
@@ -104,34 +100,17 @@ export const JWTProvider = ({ children }) => {
     };
 
     const register = async (firstName, lastName, company_name, email, mobile, password) => {
-        // todo: this flow need to be recode as it not verified
-        const id = chance.bb_pin();
         const response = await axios.post('/register', {
-            // id,
             first_name: firstName,
             last_name: lastName,
-            company_name,
-            email,
-            mobile,
-            password,
+            company_name: company_name,
+            email: email,
+            mobile: mobile,
+            password: password,
             password_confirmation: password
         });
-        let users = response.data;
-
-        if (window.localStorage.getItem('users') !== undefined && window.localStorage.getItem('users') !== null) {
-            const localUsers = window.localStorage.getItem('users');
-            users = [
-                ...JSON.parse(localUsers),
-                {
-                    id,
-                    email,
-                    password,
-                    name: `${firstName} ${lastName}`
-                }
-            ];
-        }
-
-        window.localStorage.setItem('users', JSON.stringify(users));
+        console.log(response, 'response');
+        return response;
     };
 
     const logout = () => {
@@ -149,12 +128,35 @@ export const JWTProvider = ({ children }) => {
 
     const updateProfile = () => {};
 
+    const updateUserDetails = (updatedUser) => {
+        try {
+            // Update user details in localStorage
+            const userDetails = JSON.stringify(updatedUser);
+            localStorage.setItem('userDetails', userDetails);
+
+            // Dispatch action to update user in state
+            dispatch({
+                type: UPDATE_USER,
+                payload: {
+                    user: updatedUser
+                }
+            });
+
+            return true;
+        } catch (err) {
+            console.error('Failed to update user details:', err);
+            return false;
+        }
+    };
+
     if (state.isInitialized !== undefined && !state.isInitialized) {
         return <Loader />;
     }
 
     return (
-        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, updateProfile }}>{children}</JWTContext.Provider>
+        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, updateProfile, updateUserDetails }}>
+            {children}
+        </JWTContext.Provider>
     );
 };
 

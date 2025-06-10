@@ -34,27 +34,35 @@ const AddCategoryModal = ({ open, handleClose, handleCategoryChanged }) => {
         },
         validationSchema,
         onSubmit: async (values) => {
-            console.log(values);
-            // handleClose();
-            await dispatch(postJobAPIJSON({ API_PATH: `/admin/add-job-category`, body: values })).then((response) => {
-                console.log(response, 'response ');
-                dispatch(
-                    openSnackbar({
-                        open: true,
-                        message: response?.payload?.status ? response?.payload?.message : '',
-                        variant: 'alert',
-                        alert: response?.payload?.status ? { color: 'success' } : { color: 'error' },
-                        close: false
-                    })
-                );
-                if (response?.payload?.status) {
-                    console.log('my name is khan');
-
-                    dispatch(resetPostJobAPIJSON());
-                    handleCategoryChanged();
-                    handleClose();
-                }
-            });
+            await dispatch(postJobAPIJSON({ API_PATH: `/admin/add-job-category`, body: values }))
+                .unwrap()
+                .then((response) => {
+                    dispatch(
+                        openSnackbar({
+                            open: true,
+                            message: response?.message ? response?.message : '',
+                            variant: 'alert',
+                            alert: response?.status ? { color: 'success' } : { color: 'error' },
+                            close: false
+                        })
+                    );
+                    if (response?.status) {
+                        dispatch(resetPostJobAPIJSON());
+                        handleCategoryChanged();
+                        handleClose();
+                    }
+                })
+                .catch((error) => {
+                    dispatch(
+                        openSnackbar({
+                            open: true,
+                            message: error?.message,
+                            variant: 'alert',
+                            alert: { color: 'error' },
+                            close: false
+                        })
+                    );
+                });
             formik.resetForm();
         }
     });

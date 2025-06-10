@@ -34,30 +34,21 @@ const TotalApplicant = () => {
     ];
 
     const rows =
-        allJobs && allJobs?.data?.data?.length > 0
-            ? allJobs?.data?.data?.map((job) => {
-                  const jobObj = {
-                      jobID: job?.id,
-                      jobTitle: job?.title,
-                      companyName: job?.company_name,
-                      location: job?.location,
-                      email: job?.email_address,
-                      totalNoApplicants: job?.application_list?.length,
-                      jobPublished: job?.created_at,
-                      status: job?.status
-                  };
-                  return jobObj;
-              })
-            : [
-                  {
-                      jobTitle: '--',
-                      companyName: '--',
-                      location: '--',
-                      email: '--',
-                      phoneNo: '--',
-                      appliedDate: '--'
-                  }
-              ];
+        allJobs &&
+        allJobs?.data?.data?.length > 0 &&
+        allJobs?.data?.data?.map((job) => {
+            const jobObj = {
+                jobID: job?.id,
+                jobTitle: job?.title,
+                companyName: job?.company_name,
+                location: job?.location,
+                email: job?.email_address,
+                totalNoApplicants: job?.application_list?.length,
+                jobPublished: job?.created_at,
+                status: job?.status
+            };
+            return jobObj;
+        });
     useEffect(() => {
         dispatch(
             fetchAllJobsFromAPI({

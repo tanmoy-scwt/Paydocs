@@ -29,6 +29,7 @@ import { workTypesData } from 'views/forms/FormSelectBoxData';
 import adminPostJobValidation from 'views/forms/validations/adminPostJobValidation';
 import { postJobFormData } from 'store/jobThunks/jobThunks';
 import { useSelector } from 'store';
+// import { useState } from 'react';
 
 // ================== Work Types ====================
 const work_types = workTypesData;
@@ -38,8 +39,11 @@ const AdminPostJob = () => {
     const { categories, loadingCategory, categoryError } = useJobCategoryList('/admin/job-category-list');
     const { adminUserList, loadingAdminUserList, adminUserListError } = useAdminAllUserList('/admin/user-name-list');
     const { isLoadingFormData } = useSelector((state) => state.PostJobFormDataAPI);
+    // const [companyName, setCompanyName] = useState('');
     const theme = useTheme();
     const dispatch = useDispatch();
+
+    console.log(adminUserList, 'adminUserList');
 
     const formik = useFormik({
         initialValues: {
@@ -114,7 +118,15 @@ const AdminPostJob = () => {
                                             id="user_id"
                                             name="user_id"
                                             value={formik.values.user_id}
-                                            onChange={formik.handleChange}
+                                            // onChange={formik.handleChange}
+                                            onChange={(e) => {
+                                                const selectedUserId = e.target.value;
+                                                const selectedUser = adminUserList.find((user) => user.id === selectedUserId);
+                                                formik.setFieldValue('user_id', selectedUserId);
+                                                if (selectedUser) {
+                                                    formik.setFieldValue('company_name', selectedUser.company_name || '');
+                                                }
+                                            }}
                                             onBlur={formik.handleBlur}
                                             label="User ID"
                                         >
@@ -122,7 +134,7 @@ const AdminPostJob = () => {
                                                 !adminUserListError &&
                                                 adminUserList?.map((option) => (
                                                     <MenuItem key={option.id} value={option.id}>
-                                                        {option?.first_name} {option?.email}
+                                                        {option?.first_name} {option?.last_name} ( {option?.email} )
                                                     </MenuItem>
                                                 ))}
                                         </Select>

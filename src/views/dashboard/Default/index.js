@@ -57,19 +57,19 @@ const Dashboard = () => {
             {/* Company Overview */}
             <Grid item xs={12}>
                 <Typography component="h6" sx={{ fontWeight: 500, fontSize: '22px', mb: '1rem' }}>
-                    {user?.user_role === 'user' && 'Top Companies'}
+                    {user?.user_role === 'admin' && 'Top Companies'}
                 </Typography>
 
                 <Grid container spacing={gridSpacing}>
                     {user?.user_role === 'user'
-                        ? dashboardData?.totalJobPost || dashboardData?.totalJobApplication
+                        ? dashboardData?.totalJobPost >= 0 || dashboardData?.totalJobApplication >= 0
                             ? [
                                   {
-                                      totalCount: `${dashboardData?.totalJobPost} Job Posted`,
+                                      totalCount: `${dashboardData?.totalJobPost}`,
                                       titleName: 'Total Job Post'
                                   },
                                   {
-                                      totalCount: `${dashboardData?.totalJobApplication} Job Application`,
+                                      totalCount: `${dashboardData?.totalJobApplication}`,
                                       titleName: 'Total Job Application'
                                   }
                               ].map((companyDetails, index) => (

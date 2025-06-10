@@ -32,7 +32,7 @@ const ApplicantDetailsUser = () => {
         phone: selectedJob?.data?.[0]?.phone_number || 'N/A',
         noOfApplicant: selectedJob?.data?.[0]?.application_list?.length || 'N/A',
         job_description: selectedJob?.data?.[0]?.job_description ? selectedJob?.data?.[0]?.job_description : 'N/A',
-        created_at: selectedJob?.data?.[0]?.created_at ? selectedJob?.data?.[0]?.created_at : 'N/A',
+        // created_at: selectedJob?.data?.[0]?.created_at ? selectedJob?.data?.[0]?.created_at : 'N/A',
         location: selectedJob?.data?.[0]?.location ? selectedJob?.data?.[0]?.location : 'N/A',
         salaryRange: selectedJob?.data?.[0]?.salary_from
             ? `Rs ${Math.ceil(selectedJob?.data?.[0]?.salary_from)}-${Math.ceil(selectedJob?.data?.[0]?.salary_to)}`
@@ -70,7 +70,7 @@ const ApplicantDetailsUser = () => {
         { title: 'Salary Range', content: application?.salaryRange },
         { title: 'No of Applicants', content: application?.number_of_applicants },
         { title: 'Job Posted', content: new Date(application?.jobPosted).toLocaleDateString('en-GB') },
-        { title: 'Created On', content: new Date(application?.created_at).toLocaleDateString('en-GB') },
+        // { title: 'Created On', content: new Date(application?.created_at).toLocaleDateString('en-GB') },
         { title: 'Total Applications Received', content: application?.noOfApplicant }
     ];
 

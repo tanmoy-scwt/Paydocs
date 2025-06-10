@@ -2,7 +2,7 @@ import { Button, Grid, Pagination } from '@mui/material';
 import { useTheme } from '@mui/system';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'store';
 import { fetchAllJobsFromAPI, fetchSelectedJobByIDFromAPI, postJobAPIJSON } from 'store/jobThunks/jobThunks';
 import { clearJobData } from 'store/slices/JobsSlices/allJobsSlice';
@@ -28,6 +28,8 @@ const AllJobCategory = () => {
     const [isDeleteModelOpen, setDeleteModelOpen] = useState(false);
     const [deletedId, setDeletedId] = useState(null);
 
+    const navigate = useNavigate();
+
     const handleCategoryChanged = () => {
         setCategoryEdited((prev) => !prev);
     };
@@ -48,26 +50,18 @@ const AllJobCategory = () => {
     ];
 
     const rows =
-        allJobs && allJobs?.data?.data?.length > 0
-            ? allJobs?.data?.data?.map((job) => {
-                  const jobObj = {
-                      jobID: job?.id,
-                      job_category_name: job?.job_category_name,
-                      jobPublished: job?.created_at,
-                      updatedAT: job?.updated_at
-                  };
-                  return jobObj;
-              })
-            : [
-                  {
-                      jobTitle: '--',
-                      companyName: '--',
-                      location: '--',
-                      email: '--',
-                      phoneNo: '--',
-                      appliedDate: '--'
-                  }
-              ];
+        allJobs &&
+        allJobs?.data?.data?.length > 0 &&
+        allJobs?.data?.data?.map((job) => {
+            const jobObj = {
+                jobID: job?.id,
+                job_category_name: job?.job_category_name,
+                jobPublished: job?.created_at,
+                updatedAT: job?.updated_at
+            };
+            return jobObj;
+        });
+
     useEffect(() => {
         console.log('CategoryEdited Changed', isCategoryEdited);
 
@@ -90,27 +84,41 @@ const AllJobCategory = () => {
         setAddCategoryModelOpen((prev) => !prev);
     };
     const handleDeleteCategory = async (id) => {
-        console.log('Deleted ID', id);
         const categoryBody = {
             category_id: id
         };
-        await dispatch(postJobAPIJSON({ API_PATH: `/admin/delete-job-category`, body: categoryBody })).then((response) => {
-            console.log(response, 'response ');
-            dispatch(
-                openSnackbar({
-                    open: true,
-                    message: response?.payload?.status ? response?.payload?.message : '',
-                    variant: 'alert',
-                    alert: response?.payload?.status ? { color: 'success' } : { color: 'error' },
-                    close: false
-                })
-            );
-            if (response?.payload?.status) {
-                dispatch(resetPostJobAPIJSON());
-                handleCategoryChanged();
+        dispatch(postJobAPIJSON({ API_PATH: `/admin/delete-job-category`, body: categoryBody }))
+            .unwrap()
+            .then((response) => {
+                console.log(response, 'response');
+                dispatch(
+                    openSnackbar({
+                        open: true,
+                        message: response?.status ? response?.message : '',
+                        variant: 'alert',
+                        alert: { color: response?.status ? 'success' : 'error' },
+                        close: false
+                    })
+                );
+                if (response?.status) {
+                    dispatch(resetPostJobAPIJSON());
+                    handleCategoryChanged();
+                    setDeleteModelOpen(false);
+                }
+            })
+            .catch((error) => {
+                console.log(error, 'error');
+                dispatch(
+                    openSnackbar({
+                        open: true,
+                        message: error?.message || 'Something went wrong while deleting category.',
+                        variant: 'alert',
+                        alert: { color: 'error' },
+                        close: false
+                    })
+                );
                 setDeleteModelOpen(false);
-            }
-        });
+            });
     };
 
     const openDeleteModal = (id) => {
@@ -121,7 +129,7 @@ const AllJobCategory = () => {
     const handlePageChange = useCallback(
         (event, value) => {
             setPage(value);
-            navigate(`/job-management?page=${value}`);
+            navigate(`/job-category?page=${value}`);
         },
         [page]
     );

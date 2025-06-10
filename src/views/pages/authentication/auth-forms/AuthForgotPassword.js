@@ -20,6 +20,7 @@ const AuthForgotPassword = ({ ...others }) => {
     const [resendDisabled, setResendDisabled] = useState(false);
     const [counter, setCounter] = useState(30);
     const [showOtpField, setShowOtpField] = useState(false);
+    const [resendOTPButtonDisabled, setResendOTPButtonDisabled] = useState(false);
     const [showPasswordField, setShowPasswordField] = useState(false);
 
     const validationSchema = Yup.object().shape({
@@ -46,6 +47,7 @@ const AuthForgotPassword = ({ ...others }) => {
                     if (prev <= 1) {
                         clearInterval(timer);
                         setResendDisabled(false);
+                        setResendOTPButtonDisabled(false);
                         return 30;
                     }
                     return prev - 1;
@@ -70,66 +72,104 @@ const AuthForgotPassword = ({ ...others }) => {
                             email: values.email,
                             send_otp_reason: 'resetPassword'
                         };
-                        await dispatch(postJobAPIJSON({ API_PATH: '/send-otp', body: emailVerification })).then((response) => {
-                            console.log(response, 'otp response');
-
-                            if (response?.payload?.status) {
-                                setStatus({ success: true });
-                                setSubmitting(false);
-                                setMyEmail(values.email);
+                        await dispatch(postJobAPIJSON({ API_PATH: '/send-otp', body: emailVerification }))
+                            .unwrap()
+                            .then((response) => {
+                                console.log(response, 'otp response');
+                                if (response?.status) {
+                                    setStatus({ success: true });
+                                    setSubmitting(false);
+                                    setMyEmail(values.email);
+                                    setShowOtpField(true);
+                                    setResendDisabled(true);
+                                    setCounter(30);
+                                }
                                 dispatch(
                                     openSnackbar({
                                         open: true,
-                                        message: 'Check mail for reset password OTP',
+                                        message: response?.message,
                                         variant: 'alert',
                                         alert: { color: 'success' },
                                         close: false
                                     })
                                 );
-                                setShowOtpField(true);
-                                setResendDisabled(true);
-                                setCounter(30);
-                            }
-                        });
+                            })
+                            .catch((error) => {
+                                dispatch(
+                                    openSnackbar({
+                                        open: true,
+                                        message: error?.message || '',
+                                        variant: 'alert',
+                                        alert: { color: 'error' },
+                                        close: false
+                                    })
+                                );
+                            });
                     } else if (showOtpField && !showPasswordField) {
-                        await dispatch(postJobAPIJSON({ API_PATH: '/verify-otp', body: values })).then((response) => {
-                            if (response?.payload?.status) {
-                                setStatus({ success: true });
-                                setSubmitting(false);
+                        await dispatch(postJobAPIJSON({ API_PATH: '/verify-otp', body: values }))
+                            .unwrap()
+                            .then((response) => {
+                                if (response?.status) {
+                                    setStatus({ success: true });
+                                    setSubmitting(false);
+                                    setShowPasswordField(true);
+                                }
                                 dispatch(
                                     openSnackbar({
                                         open: true,
-                                        message: 'Your OTP has been successfully verified!',
+                                        message: response?.message || '',
                                         variant: 'alert',
                                         alert: { color: 'success' },
                                         close: false
                                     })
                                 );
-                                setShowPasswordField(true);
-                            }
-                        });
+                            })
+                            .catch((error) => {
+                                dispatch(
+                                    openSnackbar({
+                                        open: true,
+                                        message: error?.message || '',
+                                        variant: 'alert',
+                                        alert: { color: 'error' },
+                                        close: false
+                                    })
+                                );
+                            });
                     } else {
                         // Final step: Submit new password
                         const passwordReset = {
                             email: myEmail,
                             newpassword: values.newPassword
                         };
-                        await dispatch(postJobAPIJSON({ API_PATH: '/reset-password', body: passwordReset })).then((response) => {
-                            if (response?.payload?.status) {
-                                setStatus({ success: true });
-                                setSubmitting(false);
+                        await dispatch(postJobAPIJSON({ API_PATH: '/reset-password', body: passwordReset }))
+                            .unwrap()
+                            .then((response) => {
+                                if (response?.status) {
+                                    setStatus({ success: true });
+                                    setSubmitting(false);
+                                    navigate('/');
+                                }
                                 dispatch(
                                     openSnackbar({
                                         open: true,
-                                        message: 'Password reset successful!',
+                                        message: response?.message || '',
                                         variant: 'alert',
                                         alert: { color: 'success' },
                                         close: false
                                     })
                                 );
-                                navigate('/');
-                            }
-                        });
+                            })
+                            .catch((error) => {
+                                dispatch(
+                                    openSnackbar({
+                                        open: true,
+                                        message: error?.message || '',
+                                        variant: 'alert',
+                                        alert: { color: 'error' },
+                                        close: false
+                                    })
+                                );
+                            });
                     }
                 } catch (err) {
                     console.error(err);
@@ -188,18 +228,21 @@ const AuthForgotPassword = ({ ...others }) => {
                                         variant="text"
                                         size="small"
                                         sx={{ textTransform: 'none' }}
+                                        disabled={resendOTPButtonDisabled}
                                         onClick={async () => {
                                             const emailVerification = {
                                                 email: myEmail,
                                                 send_otp_reason: 'emailVerification'
                                             };
-                                            await dispatch(postJobAPIJSON({ API_PATH: '/send-otp', body: emailVerification })).then(
-                                                (response) => {
-                                                    if (response?.payload?.status) {
+                                            setResendOTPButtonDisabled(true);
+                                            await dispatch(postJobAPIJSON({ API_PATH: '/send-otp', body: emailVerification }))
+                                                .unwrap()
+                                                .then((response) => {
+                                                    if (response?.status) {
                                                         dispatch(
                                                             openSnackbar({
                                                                 open: true,
-                                                                message: 'Check mail for reset password OTP',
+                                                                message: response?.message,
                                                                 variant: 'alert',
                                                                 alert: { color: 'success' },
                                                                 close: false
@@ -208,12 +251,26 @@ const AuthForgotPassword = ({ ...others }) => {
                                                         setResendDisabled(true);
                                                         setCounter(30);
                                                     }
-                                                }
-                                            );
+                                                })
+                                                .catch((error) => {
+                                                    dispatch(
+                                                        openSnackbar({
+                                                            open: true,
+                                                            message: error?.message,
+                                                            variant: 'alert',
+                                                            alert: { color: 'error' },
+                                                            close: false
+                                                        })
+                                                    );
+                                                });
                                         }}
-                                        disabled={resendDisabled}
                                     >
-                                        {resendDisabled ? `Resend OTP (${counter}s)` : 'Resend OTP'}
+                                        {resendOTPButtonDisabled
+                                            ? resendDisabled
+                                                ? `Resend OTP (${counter}s)`
+                                                : 'Sending OTP...'
+                                            : 'Resend OTP'}
+                                        {/* {resendDisabled ? `Resend OTP (${counter}s)` : 'Resend OTP'} */}
                                     </Button>
                                 </Box>
                             )}

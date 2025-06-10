@@ -32,7 +32,7 @@ function createData(logo, companyName, location, applicants) {
 // =========================|| DATA - LATEST JOBS TABLE ||========================= //
 
 const LatestJobsTable = ({ title, isLoading, popularJobs }) => {
-    const rows = popularJobs?.map((item) => createData(item?.company_logo, item?.title, item?.location, item?.number_of_applicants));
+    const rows = popularJobs?.map((item) => createData(item?.company_logo, item?.title, item?.location, item?.application_list_count));
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));

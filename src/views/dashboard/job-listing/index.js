@@ -20,11 +20,11 @@ import { setJobParams } from 'store/slices/JobsSlices/allJobsSlice';
 import useCrypto from 'hooks/useCrypto';
 
 const noOfApplicantsOptions = [
-    { value: 'all', label: 'ALL' },
-    { value: '10', label: '10 Applicants' },
-    { value: '50', label: '50 Applicants' },
-    { value: '100', label: '100 Applicants' },
-    { value: '200', label: '200 Applicants' }
+    { value: '0-0', label: 'ALL' },
+    { value: '1-50', label: '1-50 ' },
+    { value: '51-100', label: '51-100 ' },
+    { value: '101-150', label: '101-150 ' },
+    { value: '151-200', label: '151-200 ' }
 ];
 
 const JobListing = () => {
@@ -43,7 +43,6 @@ const JobListing = () => {
 
     const allJobsFromAPI = useSelector((state) => state.allJobs);
     const { isLoading, allJobs } = allJobsFromAPI;
-
     const ALL_JOBS_LIST_ARRAY = allJobs?.status === true ? allJobs?.data?.jobList?.data : [];
 
     const TOTAL_PAGES = allJobs?.status === true ? allJobs?.data?.jobList?.last_page : 1;
@@ -68,7 +67,7 @@ const JobListing = () => {
             label: 'All'
         });
         setCATEGORY_ARR(CategoryList);
-    }, []);
+    }, [allJobs]);
 
     const handleFormOpenAction = (id) => {
         const ID = encrypt(id);
@@ -98,6 +97,8 @@ const JobListing = () => {
         if (currentPage) {
             setPage(currentPage);
         }
+        const NoOFApplicant = noOfApplicants.split('-');
+        console.log(NoOFApplicant);
 
         const allParamsFilter = {
             page: page,
@@ -106,7 +107,9 @@ const JobListing = () => {
             category: category === 'all' ? '' : category,
             salaryLowerRange: salary[0],
             salaryUpperRange: salary[1],
-            noOfApplicants: noOfApplicants === 'all' ? '' : noOfApplicants
+            // noOfApplicants: noOfApplicants === 'all' ? '' : noOfApplicants,
+            noOfApplicantsLowerRange: NoOFApplicant[0] == 0 ? '' : NoOFApplicant[0],
+            noOfApplicantsUpperRange: NoOFApplicant[1] == 0 ? '' : NoOFApplicant[1]
         };
 
         dispatch(

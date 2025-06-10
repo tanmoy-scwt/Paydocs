@@ -27,7 +27,7 @@ export const postJobAPIJSON = createAsyncThunk('postJob/postSingleJob', async ({
         const response = await postJobApiJson(API_PATH, body);
         return response.data;
     } catch (error) {
-        return rejectWithValue('msg is for rejecting');
+        return rejectWithValue(error);
     }
 });
 
@@ -36,7 +36,7 @@ export const postJobFormData = createAsyncThunk('job/postJobFormData', async ({ 
         const response = await postJobApiFormData(API_PATH, formData);
         return response.data;
     } catch (error) {
-        return rejectWithValue('error');
+        return rejectWithValue(error);
     }
 });
 

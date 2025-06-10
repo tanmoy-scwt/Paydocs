@@ -11,6 +11,7 @@ import { fetchSelectedJobByIDFromAPI } from 'store/jobThunks/jobThunks';
 import MainCard from 'ui-component/cards/MainCard';
 import useCrypto from 'hooks/useCrypto';
 import ApplicantDetails from 'views/dashboard/ApplicantDetails/ApplicantDetails';
+import { workTypesData } from 'views/forms/FormSelectBoxData';
 
 const ApplicationDetailsAdmin = () => {
     const theme = useTheme();
@@ -18,7 +19,6 @@ const ApplicationDetailsAdmin = () => {
     const { id } = useParams();
     const JOB_APPLIED_DETAILS = useSelector((state) => state.getJobByID);
     const { isLoading, selectedJob } = JOB_APPLIED_DETAILS;
-    console.log(selectedJob, 'seleected Hhashdjk');
 
     const { decrypt } = useCrypto();
     const application = {
@@ -32,10 +32,10 @@ const ApplicationDetailsAdmin = () => {
         phone: selectedJob?.data?.[0]?.phone_number || 'N/A',
         noOfApplicant: selectedJob?.data?.[0]?.application_list?.length || 'N/A',
         job_description: selectedJob?.data?.[0]?.job_description ? selectedJob?.data?.[0]?.job_description : 'N/A',
-        created_at: selectedJob?.data?.[0]?.created_at ? selectedJob?.data?.[0]?.created_at : 'N/A',
+        // created_at: selectedJob?.data?.[0]?.created_at ? selectedJob?.data?.[0]?.created_at : 'N/A',
         location: selectedJob?.data?.[0]?.location ? selectedJob?.data?.[0]?.location : 'N/A',
         salaryRange: selectedJob?.data?.[0]?.salary_from
-            ? `Rs ${Math.ceil(selectedJob?.data?.[0]?.salary_from)}-${Math.ceil(selectedJob?.data?.[0]?.salary_to)}`
+            ? `₹${Math.ceil(selectedJob?.data?.[0]?.salary_from)} - ₹${Math.ceil(selectedJob?.data?.[0]?.salary_to)}`
             : 'N/A',
         number_of_applicants: selectedJob?.data?.[0]?.number_of_applicants ? selectedJob?.data?.[0]?.number_of_applicants : 'N/A',
         work_type: selectedJob?.data?.[0]?.work_type ? selectedJob?.data?.[0]?.work_type : 'N/A',
@@ -81,29 +81,32 @@ const ApplicationDetailsAdmin = () => {
         return <ApplicationDetailsShimmer />;
     }
 
+    const WORK_TYPE = workTypesData;
+    const workType = WORK_TYPE.find((workTypess) => workTypess.value === application?.work_type);
+
     const applicationFields = [
         { title: 'Job Title', content: application?.job_title },
         { title: 'Company Name', content: application?.company_name },
         { title: 'Location', content: application?.location },
-        { title: 'Work Type', content: application?.work_type },
+        { title: 'Work Type', content: workType?.label },
         { title: 'Email', content: application?.email },
         { title: 'Phone', content: application?.phone },
         { title: 'Salary Range', content: application?.salaryRange },
         { title: 'No of Applicants', content: application?.number_of_applicants },
         { title: 'Job Posted', content: new Date(application?.jobPosted).toLocaleDateString('en-GB') },
-        { title: 'Created On', content: new Date(application?.created_at).toLocaleDateString('en-GB') },
+        // { title: 'Created On', content: new Date(application?.created_at).toLocaleDateString('en-GB') },
         { title: 'Total Applications Received', content: application?.noOfApplicant }
     ];
     const userFields = [
         { title: 'First Name', content: user?.first_name },
         { title: 'Last Name', content: user?.last_name },
-        { title: 'Role', content: user?.user_role },
+        // { title: 'Role', content: user?.user_role },
         { title: 'Company Name', content: user?.company_name },
         { title: 'Email', content: user?.email },
         { title: 'Mobile', content: user?.mobile },
         { title: 'Website', content: user?.website || 'N/A' },
-        { title: 'Email Verified', content: user?.email_verified_at ? 'Yes' : 'No' },
-        { title: 'Created At', content: new Date(user?.created_at).toLocaleDateString('en-GB') },
+        { title: 'Email Verified', content: 'Yes' },
+        { title: 'Job Posted', content: new Date(user?.created_at).toLocaleDateString('en-GB') },
         { title: 'Updated At', content: new Date(user?.updated_at).toLocaleDateString('en-GB') }
     ];
 

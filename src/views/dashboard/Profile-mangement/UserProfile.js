@@ -16,12 +16,15 @@ import { openSnackbar } from 'store/slices/snackbar';
 import { useDispatch } from 'store';
 import { postJobFormData } from 'store/jobThunks/jobThunks';
 import { resetPostJobFormData } from 'store/slices/JobsSlices/postJobFormData';
+import { useSelector } from 'store';
 
 // ==============================|| PROFILE 2 - USER PROFILE ||============================== //
 
 const UserProfile = () => {
     const theme = useTheme();
-    const { user } = useAuth();
+    const { user, updateUserDetails } = useAuth();
+
+    const { isLoadingFormData } = useSelector((state) => state.PostJobFormDataAPI);
 
     const validationSchema = yup.object({
         firstName: yup.string().required('First Name is required'),
@@ -30,9 +33,11 @@ const UserProfile = () => {
         siteInformation: yup.string().required('Site Information is Required'),
         phoneNumber: yup
             .string()
-            .matches(/^[0-9+\s-]{10,15}$/, 'Enter a valid phone number')
+            .matches(/^\d{10}$/, 'Enter a valid 10-digit phone number')
             .required('Phone number is required')
     });
+
+    console.log(user);
 
     const dispatch = useDispatch();
     const formik = useFormik({
@@ -41,7 +46,7 @@ const UserProfile = () => {
             lastName: user?.last_name || '',
             companyName: user?.company_name || '',
             phoneNumber: user?.mobile || '',
-            companyLogo: null,
+            companyLogo: user?.profile_pic || '',
             siteInformation: user?.website || ''
         },
         validationSchema,
@@ -53,22 +58,39 @@ const UserProfile = () => {
                 console.log(key);
                 formData.append(updateProfileFeild[index], value);
             });
-            await dispatch(postJobFormData({ API_PATH: '/update-profile', formData })).then((response) => {
-                console.log(response, 'response');
-
-                dispatch(
-                    openSnackbar({
-                        open: true,
-                        message: response?.payload?.status ? 'Profile Successfully Update' : '',
-                        variant: 'alert',
-                        alert: response?.payload?.status ? { color: 'success' } : { color: 'error' },
-                        close: false
-                    })
-                );
-                if (response?.payload?.status) {
-                    dispatch(resetPostJobFormData());
-                }
-            });
+            await dispatch(postJobFormData({ API_PATH: '/update-profile', formData }))
+                .unwrap()
+                .then((response) => {
+                    if (response?.status) {
+                        localStorage.setItem('userDetails', JSON.stringify(response?.data));
+                        const success = updateUserDetails(response?.data);
+                        if (success) {
+                            dispatch(
+                                openSnackbar({
+                                    open: true,
+                                    message: response?.message || '',
+                                    variant: 'alert',
+                                    alert: { color: 'success' },
+                                    close: false
+                                })
+                            );
+                        } else {
+                            alert('Failed to update profile');
+                        }
+                        dispatch(resetPostJobFormData());
+                    }
+                })
+                .catch((error) => {
+                    dispatch(
+                        openSnackbar({
+                            open: true,
+                            message: error?.message || '',
+                            variant: 'alert',
+                            alert: { color: 'error' },
+                            close: false
+                        })
+                    );
+                });
         }
     });
 
@@ -85,13 +107,21 @@ const UserProfile = () => {
                         <Grid container spacing={2} alignItems="center">
                             <Grid item>
                                 <Avatar
-                                    alt="User 1"
+                                    alt="User Profile"
                                     src={
-                                        formik?.values?.companyLogo
-                                            ? `${URL.createObjectURL(formik?.values?.companyLogo)}`
-                                            : `${process.env.REACT_APP_API_IMAGE_URL}/${user?.profile_pic}`
+                                        formik.values.companyLogo instanceof File
+                                            ? URL.createObjectURL(formik.values.companyLogo)
+                                            : user?.profile_pic
+                                            ? `${process.env.REACT_APP_API_IMAGE_URL}/${user.profile_pic}`
+                                            : '' // Fallback empty string or default avatar
                                     }
                                     sx={{ height: 80, width: 80 }}
+                                    onLoad={() => {
+                                        // Revoke the object URL after the image is loaded to free memory
+                                        if (formik.values.companyLogo instanceof File) {
+                                            URL.revokeObjectURL(URL.createObjectURL(formik.values.companyLogo));
+                                        }
+                                    }}
                                 />
                             </Grid>
                             <Grid item sm zeroMinWidth>
@@ -247,7 +277,7 @@ const UserProfile = () => {
                                 size="large"
                                 disabled={user?.user_role === 'admin' ? true : false}
                             >
-                                Update Profile
+                                {isLoadingFormData ? 'Updating...' : 'Update Profile'}
                             </Button>
                         </AnimateButton>
                     </Grid>

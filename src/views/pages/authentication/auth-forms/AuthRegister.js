@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'store';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     Button,
-    Checkbox,
+    // Checkbox,
     FormControl,
-    FormControlLabel,
+    // FormControlLabel,
     FormHelperText,
     Grid,
     IconButton,
@@ -48,7 +48,7 @@ const JWTRegister = ({ ...others }) => {
 
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const [showPassword, setShowPassword] = React.useState(false);
-    const [checked, setChecked] = React.useState(true);
+    // const [checked, setChecked] = React.useState(true);
 
     const [strength, setStrength] = React.useState(0);
     const [level, setLevel] = React.useState();
@@ -109,36 +109,41 @@ const JWTRegister = ({ ...others }) => {
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                    console.log(values, 'values');
+                    const { firstName, lastName, company_name, email, mobile, password } = values;
                     try {
-                        await register(
-                            values.firstName,
-                            values.lastName,
-                            values.company_name,
-                            values.email,
-                            values.mobile,
-                            values.password
-                        );
-                        if (scriptedRef.current) {
+                        const response = await register(firstName, lastName, company_name, email, mobile, password);
+                        if (response.status) {
                             setStatus({ success: true });
                             setSubmitting(false);
-                            dispatch(
-                                openSnackbar({
-                                    open: true,
-                                    message: 'Your registration has been successfully completed.',
-                                    variant: 'alert',
-                                    alert: {
-                                        color: 'success'
-                                    },
-                                    close: false
-                                })
-                            );
-
                             setTimeout(() => {
                                 navigate('/', { replace: true });
                             }, 1500);
                         }
+                        dispatch(
+                            openSnackbar({
+                                open: true,
+                                message: response.data.status ? 'Profile created successfully!' : 'Failed to create profile.',
+                                variant: 'alert',
+                                alert: {
+                                    color: 'success'
+                                },
+                                close: false
+                            })
+                        );
                     } catch (err) {
                         console.error(err);
+                        dispatch(
+                            openSnackbar({
+                                open: true,
+                                message: err.message || '',
+                                variant: 'alert',
+                                alert: {
+                                    color: 'error'
+                                },
+                                close: false
+                            })
+                        );
                         if (scriptedRef.current) {
                             setStatus({ success: false });
                             setErrors({ submit: err.message });
@@ -210,7 +215,7 @@ const JWTRegister = ({ ...others }) => {
                             {touched.company_name && errors.company_name && <FormHelperText error>{errors.company_name}</FormHelperText>}
                         </FormControl>
                         <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-email-register">Email Address / Username</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-email-register">Email Address</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-email-register"
                                 type="email"
@@ -302,7 +307,7 @@ const JWTRegister = ({ ...others }) => {
                             </FormControl>
                         )}
 
-                        <Grid container alignItems="center" justifyContent="space-between">
+                        {/* <Grid container alignItems="center" justifyContent="space-between">
                             <Grid item>
                                 <FormControlLabel
                                     control={
@@ -317,13 +322,13 @@ const JWTRegister = ({ ...others }) => {
                                         <Typography variant="subtitle1">
                                             Agree with &nbsp;
                                             <Typography variant="subtitle1" component={Link} to="#">
-                                                Terms & Condition.
+                                                Terms & Condition.sadad
                                             </Typography>
                                         </Typography>
                                     }
                                 />
                             </Grid>
-                        </Grid>
+                        </Grid> */}
                         {errors.submit && (
                             <Box sx={{ mt: 3 }}>
                                 <FormHelperText error>{errors.submit}</FormHelperText>

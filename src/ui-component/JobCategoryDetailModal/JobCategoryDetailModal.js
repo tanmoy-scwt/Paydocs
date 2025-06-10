@@ -49,23 +49,36 @@ const JobCategoryDetailModal = ({ open, handleClose, data, isLoading, handleCate
                 category_id: data?.id,
                 job_category_name: values?.job_category_name
             };
-            await dispatch(postJobAPIJSON({ API_PATH: `/admin/edit-job-category`, body: categoryBody })).then((response) => {
-                console.log(response, 'response ');
-                dispatch(
-                    openSnackbar({
-                        open: true,
-                        message: response?.payload?.status ? response?.payload?.message : '',
-                        variant: 'alert',
-                        alert: response?.payload?.status ? { color: 'success' } : { color: 'error' },
-                        close: false
-                    })
-                );
-                if (response?.payload?.status) {
-                    dispatch(resetPostJobAPIJSON());
-                    handleCategoryChanged();
-                    handleClose();
-                }
-            });
+            await dispatch(postJobAPIJSON({ API_PATH: `/admin/edit-job-category`, body: categoryBody }))
+                .unwrap()
+                .then((response) => {
+                    console.log(response, 'response ');
+                    dispatch(
+                        openSnackbar({
+                            open: true,
+                            message: response?.message || '',
+                            variant: 'alert',
+                            alert: { color: 'success' },
+                            close: false
+                        })
+                    );
+                    if (response?.status) {
+                        dispatch(resetPostJobAPIJSON());
+                        handleCategoryChanged();
+                        handleClose();
+                    }
+                })
+                .catch((error) => {
+                    dispatch(
+                        openSnackbar({
+                            open: true,
+                            message: error.message || '',
+                            variant: 'alert',
+                            alert: { color: 'error' },
+                            close: false
+                        })
+                    );
+                });
             setEditMode(false);
         }
     });

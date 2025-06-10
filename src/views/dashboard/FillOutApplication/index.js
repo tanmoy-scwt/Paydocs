@@ -62,7 +62,6 @@ const FillOutApplication = () => {
             });
             formData.append('job_id', JOB_ID);
             await dispatch(postJobFormData({ API_PATH: '/job-apply', formData })).then((response) => {
-                console.log(response, 'response');
                 dispatch(
                     openSnackbar({
                         open: true,
@@ -74,6 +73,10 @@ const FillOutApplication = () => {
                         close: false
                     })
                 );
+                if (response?.payload?.status) {
+                    navigate('/job-applied');
+                    formik.resetForm();
+                }
             });
         }
     });
