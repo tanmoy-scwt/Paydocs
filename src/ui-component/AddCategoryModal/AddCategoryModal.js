@@ -95,7 +95,7 @@ const AddCategoryModal = ({ open, handleClose, handleCategoryChanged }) => {
                         <Button type="button" onClick={handleClose} color="inherit">
                             Cancel
                         </Button>
-                        <Button type="submit" variant="contained" color="primary">
+                        <Button disabled={isLoadingPOST} type="submit" variant="contained" color="primary">
                             {isLoadingPOST ? 'Creating...' : 'Create'}
                         </Button>
                     </Stack>

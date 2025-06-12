@@ -138,7 +138,7 @@ const JobCategoryDetailModal = ({ open, handleClose, data, isLoading, handleCate
                             <Button onClick={handleCancel} color="inherit">
                                 Cancel
                             </Button>
-                            <Button type="submit" variant="contained" color="primary">
+                            <Button disabled={isLoadingPOST} type="submit" variant="contained" color="primary">
                                 {isLoadingPOST ? 'Saving...' : 'Save'}
                             </Button>
                         </Stack>

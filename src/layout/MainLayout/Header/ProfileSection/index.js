@@ -131,7 +131,7 @@ const ProfileSection = () => {
                 }}
                 icon={
                     <Avatar
-                        src={process.env.REACT_APP_API_IMAGE_URL + '/' + user.profile_pic}
+                        src={process.env.REACT_APP_API_IMAGE_URL + '/' + user?.profile_pic}
                         sx={{
                             ...theme.typography.mediumAvatar,
                             margin: '8px 0 8px 8px !important',

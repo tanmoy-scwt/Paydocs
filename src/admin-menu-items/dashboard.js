@@ -7,6 +7,7 @@ import { ReactComponent as HomeIcon } from '../assets/images/icons/icon1.svg';
 import { ReactComponent as ProfileIcon } from '../assets/images/icons/icon2.svg';
 import { ReactComponent as JobListingIcon } from '../assets/images/icons/icon3.svg';
 import { ReactComponent as JobPostingIcon } from '../assets/images/icons/icon4.svg';
+import { ReactComponent as CategoryIcon } from '../assets/images/icons/category.svg';
 
 const icons = {
     IconDashboard,
@@ -14,7 +15,8 @@ const icons = {
     HomeIcon,
     ProfileIcon,
     JobListingIcon,
-    JobPostingIcon
+    JobPostingIcon,
+    CategoryIcon
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -70,7 +72,7 @@ const dashboard = {
             title: <FormattedMessage id="jobCategory" />,
             type: 'item',
             url: '/job-category',
-            icon: icons.JobPostingIcon,
+            icon: icons.CategoryIcon,
             breadcrumbs: false
         },
         {
@@ -78,7 +80,7 @@ const dashboard = {
             title: <FormattedMessage id="jobApplication" />,
             type: 'item',
             url: '/admin-job-application',
-            icon: icons.JobPostingIcon,
+            icon: icons.IconDeviceAnalytics,
             breadcrumbs: false
         }
     ]

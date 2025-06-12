@@ -175,13 +175,7 @@ const UserProfile = () => {
                                                 >
                                                     Change Profile Picture
                                                 </Typography>
-                                                <input
-                                                    type="file"
-                                                    hidden
-                                                    accept="image/*"
-                                                    onChange={handleFileChange}
-                                                    disabled={user?.user_role === 'admin' ? true : false}
-                                                />
+                                                <input type="file" hidden accept="image/*" onChange={handleFileChange} />
                                             </Button>
                                         </Box>
                                     </Grid>
@@ -200,7 +194,6 @@ const UserProfile = () => {
                             onBlur={formik.handleBlur}
                             error={formik.touched.lastName && Boolean(formik.errors.lastName)}
                             helperText={formik.touched.lastName && formik.errors.lastName}
-                            disabled={user?.user_role === 'admin' ? true : false}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -214,7 +207,6 @@ const UserProfile = () => {
                             onBlur={formik.handleBlur}
                             error={formik.touched.firstName && Boolean(formik.errors.firstName)}
                             helperText={formik.touched.firstName && formik.errors.firstName}
-                            disabled={user?.user_role === 'admin' ? true : false}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -232,7 +224,6 @@ const UserProfile = () => {
                             onBlur={formik.handleBlur}
                             error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
                             helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                            disabled={user?.user_role === 'admin' ? true : false}
                         />
                     </Grid>
 
@@ -247,7 +238,6 @@ const UserProfile = () => {
                             onBlur={formik.handleBlur}
                             error={formik.touched.companyName && Boolean(formik.errors.companyName)}
                             helperText={formik.touched.companyName && formik.errors.companyName}
-                            disabled={user?.user_role === 'admin' ? true : false}
                         />
                     </Grid>
 
@@ -262,7 +252,6 @@ const UserProfile = () => {
                             onBlur={formik.handleBlur}
                             error={formik.touched.siteInformation && Boolean(formik.errors.siteInformation)}
                             helperText={formik.touched.siteInformation && formik.errors.siteInformation}
-                            disabled={user?.user_role === 'admin' ? true : false}
                         />
                     </Grid>
                     <Grid item>
@@ -275,7 +264,7 @@ const UserProfile = () => {
                                 }}
                                 variant="outlined"
                                 size="large"
-                                disabled={user?.user_role === 'admin' ? true : false}
+                                disabled={isLoadingFormData}
                             >
                                 {isLoadingFormData ? 'Updating...' : 'Update Profile'}
                             </Button>

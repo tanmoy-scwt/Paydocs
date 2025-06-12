@@ -24,13 +24,14 @@ const JobPostBoxForTable = ({ action, jobDetails, setter }) => {
     const theme = useTheme();
     const [isViewMore, setViewMore] = useState(false);
     const [isDeleteModelOpen, setDeleteModelOpen] = useState(false);
-
+    const [isDeleting, setDeleting] = useState(false);
     const handleViewMore = useCallback(() => {
         setViewMore((prev) => !prev);
     }, []);
 
     const callingDeleteAPI = useDeleteAPI();
     const handleDelete = async (id) => {
+        setDeleting(true);
         const responseDelete = await callingDeleteAPI(user?.user_role === 'admin' ? `/admin/job-delete/${id}` : `/job-delete/${id}`);
         if (responseDelete.status === 200) {
             dispatch(
@@ -42,6 +43,7 @@ const JobPostBoxForTable = ({ action, jobDetails, setter }) => {
                     close: false
                 })
             );
+            setDeleting(false);
             setDeleteModelOpen(false);
             setter(true);
         }
@@ -206,6 +208,7 @@ const JobPostBoxForTable = ({ action, jobDetails, setter }) => {
                     open={isDeleteModelOpen}
                     onClose={() => setDeleteModelOpen(false)}
                     onConfirm={() => handleDelete(id)}
+                    isDeleting={isDeleting}
                 />
             )}
         </>

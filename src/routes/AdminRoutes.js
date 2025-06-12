@@ -17,6 +17,7 @@ const AllJobCategory = Loadable(lazy(() => import('views/Admin/AllJobCategory/Al
 const CurrentUserDetails = Loadable(lazy(() => import('views/Admin/CurrentUserDetails/CurrentUserDetails')));
 const AllUser = Loadable(lazy(() => import('views/Admin/AllUser/AllUser')));
 const AdminPostJob = Loadable(lazy(() => import('views/Admin/AdminPostJob/AdminPostJob')));
+const NotFound = Loadable(lazy(() => import('NotFound')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -67,6 +68,10 @@ const AdminRoutes = {
         {
             path: '/admin-job-application/:id',
             element: <ApplicationDetailsAdmin />
+        },
+        {
+            path: '*',
+            element: <NotFound />
         }
     ]
 };

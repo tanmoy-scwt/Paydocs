@@ -81,18 +81,22 @@ const LatestJobsTable = ({ title, isLoading, popularJobs }) => {
                                     </>
                                 ) : (
                                     <>
-                                        <Avatar
-                                            variant="rounded"
-                                            sx={{
-                                                borderRadius: '50%',
-                                                width: 50,
-                                                height: 50,
-                                                backgroundColor: !row?.logo ? '#ccc' : 'transparent',
-                                                border: !row?.logo ? '1px solid #ccc' : 'none'
-                                            }}
-                                            src={row?.logo ? `${process.env.REACT_APP_API_IMAGE_URL}/${row?.logo}` : ''}
-                                            alt={row?.companyName}
-                                        />
+                                        <Box sx={{ cursor: 'text' }}>
+                                            <Avatar
+                                                variant="rounded"
+                                                sx={{
+                                                    borderRadius: '50%',
+                                                    width: 50,
+                                                    height: 50,
+                                                    backgroundColor: !row?.logo ? '#ccc' : 'transparent',
+                                                    border: !row?.logo ? '1px solid #ccc' : 'none',
+                                                    cursor: 'text',
+                                                    pointerEvents: 'none'
+                                                }}
+                                                src={row?.logo ? `${process.env.REACT_APP_API_IMAGE_URL}/${row?.logo}` : ''}
+                                                alt={row?.companyName}
+                                            />
+                                        </Box>
                                         <Typography variant="body1" sx={{ flex: 5 }}>
                                             {row?.companyName}
                                         </Typography>
@@ -172,7 +176,9 @@ const LatestJobsTable = ({ title, isLoading, popularJobs }) => {
                                                         height: 40,
                                                         mt: 1,
                                                         backgroundColor: !row?.logo ? '#ccc' : 'transparent',
-                                                        border: !row?.logo ? '1px solid #ccc' : 'none'
+                                                        border: !row?.logo ? '1px solid #ccc' : 'none',
+                                                        cursor: 'text',
+                                                        pointerEvents: 'none'
                                                     }}
                                                     src={row?.logo ? `${process.env.REACT_APP_API_IMAGE_URL}/${row?.logo}` : ''}
                                                 />

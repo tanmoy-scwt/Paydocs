@@ -336,6 +336,7 @@ const PostAJob = () => {
                                                     backgroundColor: theme.palette.secondary.dark
                                                 }
                                             }}
+                                            disabled={isLoadingFormData}
                                         >
                                             {isLoadingFormData ? 'Publishing...' : 'Publish Job'}
                                         </Button>

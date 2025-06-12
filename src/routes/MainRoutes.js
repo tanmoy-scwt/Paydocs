@@ -15,6 +15,7 @@ const JobListing = Loadable(lazy(() => import('views/dashboard/job-listing')));
 const FillOutApplication = Loadable(lazy(() => import('views/dashboard/FillOutApplication')));
 const EditJobForm = Loadable(lazy(() => import('views/dashboard/edit-page')));
 const AllJobsTable = Loadable(lazy(() => import('views/dashboard/PostedJobsUser/AllJobsTable')));
+const NotFound = Loadable(lazy(() => import('NotFound')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -72,6 +73,10 @@ const MainRoutes = {
         {
             path: '/total-applicants/:id',
             element: <ApplicantDetailsUser />
+        },
+        {
+            path: '*',
+            element: <NotFound />
         }
     ]
 };

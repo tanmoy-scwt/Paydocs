@@ -51,8 +51,8 @@ const ApplicantDetails = ({ applicant }) => {
 
                     {applicant?.supported_doc !== 'null' ? (
                         <Box sx={{ mt: 2 }}>
-                            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-                                <strong>Document:</strong>&nbsp;
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Typography fontWeight="bold">Document:</Typography>
                                 <IconButton
                                     component="a"
                                     href={`${process.env.REACT_APP_API_IMAGE_URL}/${applicant.supported_doc}`}
@@ -61,13 +61,28 @@ const ApplicantDetails = ({ applicant }) => {
                                     download
                                     color="primary"
                                     size="small"
+                                    sx={{
+                                        border: '1px solid',
+                                        borderColor: 'primary.main',
+                                        borderRadius: '6px',
+                                        px: 1.5,
+                                        py: 0.5,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 0.5
+                                    }}
                                 >
-                                    <DownloadIcon /> Download Attachment
+                                    <DownloadIcon fontSize="small" />
+                                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                        Download Attachment
+                                    </Typography>
                                 </IconButton>
-                            </Typography>
+                            </Box>
                         </Box>
                     ) : (
-                        <strong>Document: N/A</strong>
+                        <Typography sx={{ mt: 2 }}>
+                            <strong>Document:</strong> N/A
+                        </Typography>
                     )}
                 </AccordionDetails>
             </Accordion>

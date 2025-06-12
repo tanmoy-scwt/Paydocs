@@ -296,6 +296,7 @@ const FillOutApplication = () => {
                                                 backgroundColor: theme.palette.secondary.dark
                                             }
                                         }}
+                                        disabled={isLoadingFormData}
                                     >
                                         {isLoadingFormData ? 'Submiting...' : 'Submit Now'}
                                     </Button>

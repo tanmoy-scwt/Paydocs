@@ -430,6 +430,7 @@ const EditCurrentJobAdmin = () => {
                                                         backgroundColor: theme.palette.secondary.dark
                                                     }
                                                 }}
+                                                disabled={isLoadingFormData}
                                             >
                                                 {isLoadingFormData ? 'Submitting...' : 'Submit Now'}
                                             </Button>

@@ -7,12 +7,13 @@ import LatestJobsTable from './LatestJobsTable';
 import axiosServices from 'utils/axios';
 import useAuth from 'hooks/useAuth';
 import { gridSpacing } from 'store/constant';
-
 const Dashboard = () => {
     const [isLoading, setLoading] = useState(true);
     const [dashboardData, setDashboardData] = useState('');
     const [dashboardBarChat, setDashboardBarChat] = useState([]);
     const { user } = useAuth();
+
+    console.log(dashboardData, 'asdasd');
 
     const fetchDetailsFromAPI = async () => {
         try {
@@ -65,14 +66,16 @@ const Dashboard = () => {
                         ? dashboardData?.totalJobPost >= 0 || dashboardData?.totalJobApplication >= 0
                             ? [
                                   {
+                                      profile: '',
                                       totalCount: `${dashboardData?.totalJobPost}`,
                                       titleName: 'Total Job Post'
                                   },
                                   {
+                                      profile: null,
                                       totalCount: `${dashboardData?.totalJobApplication}`,
                                       titleName: 'Total Job Application'
                                   }
-                              ].map((companyDetails, index) => (
+                              ]?.map((companyDetails, index) => (
                                   <Grid item key={index} xs={12} sm={6}>
                                       <CompanyBoxCard isLoading={isLoading} companyDetails={companyDetails} />
                                   </Grid>
@@ -83,7 +86,18 @@ const Dashboard = () => {
                                   </Grid>
                               ))
                         : dashboardData?.topCompanies?.length
-                        ? dashboardData.topCompanies.map((companyDetails, index) => (
+                        ? [
+                              {
+                                  profile: dashboardData?.topCompanies[0]?.user_dtls?.profile_pic,
+                                  totalCount: `${dashboardData?.topCompanies[0]?.total_job_post}`,
+                                  titleName: `${dashboardData?.topCompanies[0]?.user_dtls?.company_name}`
+                              },
+                              {
+                                  profile: dashboardData?.topCompanies[1]?.user_dtls?.profile_pic,
+                                  totalCount: `${dashboardData?.topCompanies[1]?.total_job_post}`,
+                                  titleName: `${dashboardData?.topCompanies[1]?.user_dtls?.company_name}`
+                              }
+                          ]?.map((companyDetails, index) => (
                               <Grid item key={index} xs={12} sm={6}>
                                   <CompanyBoxCard isLoading={isLoading} companyDetails={companyDetails} />
                               </Grid>

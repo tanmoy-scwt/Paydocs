@@ -27,7 +27,7 @@ const AllJobCategory = () => {
     const [isAddCategoryModelOpen, setAddCategoryModelOpen] = useState(false);
     const [isDeleteModelOpen, setDeleteModelOpen] = useState(false);
     const [deletedId, setDeletedId] = useState(null);
-
+    const { isLoadingPOST } = useSelector((state) => state.PostJobAPI);
     const navigate = useNavigate();
 
     const handleCategoryChanged = () => {
@@ -63,8 +63,6 @@ const AllJobCategory = () => {
         });
 
     useEffect(() => {
-        console.log('CategoryEdited Changed', isCategoryEdited);
-
         dispatch(fetchAllJobsFromAPI({ API_PATH: '/admin/all-job-category', params: { page: page } }));
         return () => {
             dispatch(clearJobData());
@@ -197,6 +195,7 @@ const AllJobCategory = () => {
                     open={isDeleteModelOpen}
                     onClose={() => setDeleteModelOpen(false)}
                     onConfirm={() => handleDeleteCategory(deletedId)}
+                    isDeleting={isLoadingPOST}
                 />
             )}
         </>
