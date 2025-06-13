@@ -2,19 +2,24 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { IconDashboard, IconDeviceAnalytics } from '@tabler/icons';
-import { ReactComponent as HomeIcon } from '../assets/images/icons/icon1.svg';
-import { ReactComponent as ProfileIcon } from '../assets/images/icons/icon2.svg';
-import { ReactComponent as JobListingIcon } from '../assets/images/icons/icon3.svg';
-import { ReactComponent as JobPostingIcon } from '../assets/images/icons/icon4.svg';
-
+// import { IconHome, IconUser, IconBriefcase, IconFilePlus, IconUsers, IconCategory, IconDeviceAnalytics } from '@tabler/icons';
+import {
+    IconSmartHome,
+    IconListCheck,
+    IconBriefcase, // for posting jobs
+    IconCategory, // for job listing
+    IconWorldUpload, // for posted jobs
+    IconCheck, // for job applied
+    IconUsers // for total applicants
+} from '@tabler/icons';
 const icons = {
-    IconDashboard,
-    IconDeviceAnalytics,
-    HomeIcon,
-    ProfileIcon,
-    JobListingIcon,
-    JobPostingIcon
+    HomeIcon: IconSmartHome,
+    Profile: IconCategory,
+    JobListing: IconListCheck,
+    PostJob: IconBriefcase,
+    PostedJobs: IconWorldUpload,
+    JobApplied: IconCheck,
+    TotalApplicants: IconUsers
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -38,7 +43,7 @@ const dashboard = {
             title: <FormattedMessage id="profileManagement" />,
             type: 'item',
             url: '/profile-management',
-            icon: icons.ProfileIcon,
+            icon: icons.Profile,
             breadcrumbs: false
         },
         {
@@ -46,7 +51,7 @@ const dashboard = {
             title: <FormattedMessage id="jobListing" />,
             type: 'item',
             url: '/job-listing',
-            icon: icons.JobListingIcon,
+            icon: icons.JobListing,
             breadcrumbs: false
         },
         {
@@ -54,7 +59,7 @@ const dashboard = {
             title: <FormattedMessage id="postAJob" />,
             type: 'item',
             url: '/post-job',
-            icon: icons.JobPostingIcon,
+            icon: icons.PostJob,
             breadcrumbs: false
         },
         {
@@ -62,7 +67,7 @@ const dashboard = {
             title: <FormattedMessage id="postedJobs" />,
             type: 'item',
             url: '/posted-jobs',
-            icon: icons.JobPostingIcon,
+            icon: icons.PostedJobs,
             breadcrumbs: false
         },
         {
@@ -70,7 +75,7 @@ const dashboard = {
             title: <FormattedMessage id="jobApplied" />,
             type: 'item',
             url: '/job-applied',
-            icon: icons.JobPostingIcon,
+            icon: icons.JobApplied,
             breadcrumbs: false
         },
         {
@@ -78,7 +83,7 @@ const dashboard = {
             title: <FormattedMessage id="totalApplicant" />,
             type: 'item',
             url: '/total-applicants',
-            icon: icons.JobPostingIcon,
+            icon: icons.TotalApplicants,
             breadcrumbs: false
         }
     ]

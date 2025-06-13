@@ -90,7 +90,7 @@ const Header = () => {
                 <Typography
                     sx={{
                         color: theme.palette.mode === 'dark' ? theme.palette.paper : '#2B2D3B',
-                        fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.125rem', lg: '24px' },
+                        fontSize: { xs: '1rem', sm: '1.5rem', md: '1.7rem', lg: '24px' },
                         fontWeight: '600'
                     }}
                     variant="h1"

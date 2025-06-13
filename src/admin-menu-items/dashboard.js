@@ -2,21 +2,17 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { IconDashboard, IconDeviceAnalytics } from '@tabler/icons';
-import { ReactComponent as HomeIcon } from '../assets/images/icons/icon1.svg';
-import { ReactComponent as ProfileIcon } from '../assets/images/icons/icon2.svg';
-import { ReactComponent as JobListingIcon } from '../assets/images/icons/icon3.svg';
-import { ReactComponent as JobPostingIcon } from '../assets/images/icons/icon4.svg';
-import { ReactComponent as CategoryIcon } from '../assets/images/icons/category.svg';
+
+import { IconSmartHome, IconListCheck, IconBriefcase, IconFilePlus, IconUsers, IconCategory, IconDeviceAnalytics } from '@tabler/icons';
 
 const icons = {
-    IconDashboard,
-    IconDeviceAnalytics,
-    HomeIcon,
-    ProfileIcon,
-    JobListingIcon,
-    JobPostingIcon,
-    CategoryIcon
+    HomeIcon: IconSmartHome,
+    ProfileIcon: IconCategory,
+    JobPostingIcon: IconListCheck,
+    IconFileText: IconFilePlus,
+    AllUsersIcon: IconUsers,
+    CategoryIcon: IconBriefcase,
+    IconDeviceAnalytics: IconDeviceAnalytics
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -56,7 +52,7 @@ const dashboard = {
             title: <FormattedMessage id="postAJob" />,
             type: 'item',
             url: '/admin-post-job',
-            icon: icons.JobPostingIcon,
+            icon: icons.IconFileText,
             breadcrumbs: false
         },
         {
@@ -64,7 +60,7 @@ const dashboard = {
             title: <FormattedMessage id="allUser" />,
             type: 'item',
             url: '/all-user',
-            icon: icons.JobPostingIcon,
+            icon: icons.AllUsersIcon,
             breadcrumbs: false
         },
         {
