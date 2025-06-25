@@ -38,8 +38,8 @@ const JobApplications = () => {
         allJobs?.data?.data?.map((job) => {
             const jobObj = {
                 jobID: job?.id,
-                jobTitle: job?.job_title,
-                companyName: job?.company_name,
+                jobTitle: job?.job_dtls?.title,
+                companyName: job?.job_dtls?.company_name,
                 location: job?.job_dtls?.location,
                 email: job?.job_dtls?.email_address,
                 phoneNo: job?.job_dtls?.phone_number,

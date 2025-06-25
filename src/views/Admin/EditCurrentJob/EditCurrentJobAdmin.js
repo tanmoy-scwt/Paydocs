@@ -109,7 +109,7 @@ const EditCurrentJobAdmin = () => {
                     })
                 );
                 if (response?.payload?.status) {
-                    navigate('/job-management');
+                    navigate('/admin-job-listing');
                 }
             });
         }

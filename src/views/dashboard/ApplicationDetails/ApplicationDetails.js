@@ -20,8 +20,10 @@ const ApplicationDetails = () => {
     const { isLoading, selectedJob } = JOB_APPLIED_DETAILS;
     const { decrypt } = useCrypto();
     const application = {
+        f_name: selectedJob?.data?.f_name || 'N/A',
+        l_name: selectedJob?.data?.l_name || 'N/A',
         company_name: selectedJob?.data?.company_name ? selectedJob?.data?.company_name : 'N/A',
-        job_title: selectedJob?.data?.job_title || 'N/A',
+        job_title: selectedJob?.data?.job_dtls?.title || 'N/A',
         presonalEmail: selectedJob?.data?.email || 'N/A',
         presonalPhone: selectedJob?.data?.phone || 'N/A',
         messgae: selectedJob?.data?.description || 'N/A',
@@ -147,6 +149,18 @@ const ApplicationDetails = () => {
                                 Applied Details
                             </Typography>
                             <Grid container spacing={3} sx={{ marginTop: 1 }}>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="subtitle2" gutterBottom>
+                                        First Name
+                                    </Typography>
+                                    <Typography variant="body1">{application?.f_name}</Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="subtitle2" gutterBottom>
+                                        Last Name
+                                    </Typography>
+                                    <Typography variant="body1">{application?.l_name}</Typography>
+                                </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <Typography variant="subtitle2" gutterBottom>
                                         Email

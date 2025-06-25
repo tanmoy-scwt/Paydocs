@@ -125,7 +125,6 @@ const MainLayout = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [layout, matchDownMd]
     );
-    console.log(drawerOpen);
 
     return (
         <Box sx={{ display: 'flex' }}>

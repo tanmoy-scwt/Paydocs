@@ -123,7 +123,7 @@ const JobCategoryDetailModal = ({ open, handleClose, data, isLoading, handleCate
                         <Typography mt={1}>{data?.job_category_name || 'N/A'}</Typography>
                     )}
 
-                    <Typography variant="subtitle2" mt={3}>
+                    {/* <Typography variant="subtitle2" mt={3}>
                         Created At:
                     </Typography>
                     <Typography>{data?.created_at ? new Date(data.created_at).toLocaleString() : 'N/A'}</Typography>
@@ -131,7 +131,7 @@ const JobCategoryDetailModal = ({ open, handleClose, data, isLoading, handleCate
                     <Typography variant="subtitle2" mt={2}>
                         Updated At:
                     </Typography>
-                    <Typography>{data?.updated_at ? new Date(data.updated_at).toLocaleString() : 'N/A'}</Typography>
+                    <Typography>{data?.updated_at ? new Date(data.updated_at).toLocaleString() : 'N/A'}</Typography> */}
 
                     {editMode && (
                         <Stack direction="row" spacing={2} mt={3} justifyContent="flex-end">

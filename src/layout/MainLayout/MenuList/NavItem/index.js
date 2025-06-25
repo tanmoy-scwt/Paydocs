@@ -67,7 +67,7 @@ const NavItem = ({ item, level, parentId, isParents = false }) => {
             .toString()
             .split('/')
             .findIndex((id) => id === item.id);
-        console.log(currentIndex, document.location.pathname, item);
+        // console.log(currentIndex, document.location.pathname, item);
 
         if (currentIndex > -1) {
             dispatch(activeItem([item.id]));

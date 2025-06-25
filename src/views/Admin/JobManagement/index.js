@@ -63,19 +63,23 @@ const JobManagement = () => {
         [page]
     );
     const handleFilterChange = (setter, value) => {
+        navigate('/admin-job-listing');
         setter(value);
     };
-
     useEffect(() => {
         if (currentPage) setPage(currentPage);
         dispatch(
             fetchAllJobsFromAPI({
                 API_PATH: '/admin/job-list',
-                params: {
-                    page: page,
-                    companyName: selectedCompany === 'all' ? '' : selectedCompany,
-                    jobStatus: selectJobStatus === 'all' ? '' : selectJobStatus
-                }
+                params:
+                    selectedCompany || selectJobStatus
+                        ? {
+                              companyName: selectedCompany === 'all' ? '' : selectedCompany,
+                              jobStatus: selectJobStatus === 'all' ? '' : selectJobStatus
+                          }
+                        : {
+                              page: page
+                          }
             })
         );
         dispatch(setJobParams({ page: 1, category: 2 }));
@@ -83,7 +87,6 @@ const JobManagement = () => {
 
     useEffect(() => {
         if (!loadingAdminUserList) {
-            console.log(adminUserList);
             const newDataAdminUserList = adminUserList?.map((user) => {
                 const company = user?.company_name?.split(' ');
                 const companyNameNew = company?.map((nameValue) => {

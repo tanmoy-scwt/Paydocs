@@ -7,7 +7,6 @@ const useAdminAllUserList = (API_PATH) => {
     const [adminUserList, setAdminUserList] = useState([]);
     const [loadingAdminUserList, setLoadingUserList] = useState(true);
     const [adminUserListError, setAdminUserListError] = useState(null);
-    console.log(API_PATH, 'API PATH');
 
     const fetchCategories = async () => {
         setLoadingUserList(true);
@@ -15,8 +14,6 @@ const useAdminAllUserList = (API_PATH) => {
         try {
             if (user?.user_role === 'admin') {
                 const response = await axiosServices(API_PATH);
-                console.log(response, 'response');
-
                 if (response?.data?.status) {
                     setAdminUserList(response.data.data);
                 } else {
@@ -36,9 +33,6 @@ const useAdminAllUserList = (API_PATH) => {
     useEffect(() => {
         fetchCategories();
     }, [API_PATH]);
-    console.log(adminUserList, 'adsakdjaskdjasjdk admin user list');
-    // console.log(adminUserList, 'adsakdjaskdjasjdk admin user list');
-    console.log(adminUserListError, 'adsakdjaskdjasjdk admin user list');
 
     return { adminUserList, loadingAdminUserList, adminUserListError };
 };

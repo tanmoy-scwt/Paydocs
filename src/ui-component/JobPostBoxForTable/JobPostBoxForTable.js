@@ -17,8 +17,6 @@ import ConfirmDeleteJobModal from 'ui-component/ConfirmDeleteJobModel/ConfirmDel
 import StatusIndicator from 'ui-component/StatusIndicator/StatusIndicator';
 
 const JobPostBoxForTable = ({ action, jobDetails, viewaction, setter }) => {
-    console.log(jobDetails);
-
     const {
         company_logo,
         status,

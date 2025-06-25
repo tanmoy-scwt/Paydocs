@@ -73,6 +73,7 @@ const AllJobsTable = () => {
         [page]
     );
     const handleFilterChange = (setter, value) => {
+        navigate('/posted-jobs');
         setter(value);
     };
 
@@ -82,11 +83,15 @@ const AllJobsTable = () => {
         dispatch(
             fetchAllJobsFromAPI({
                 API_PATH: user?.user_role === 'user' ? '/current-user-job-list' : '/admin/job-list',
-                params: {
-                    page: page,
-                    jobStatus: selectJobStatus === 'all' ? '' : selectJobStatus,
-                    companyName: selectedCompany === 'all' ? '' : selectedCompany
-                }
+                params:
+                    selectedCompany || selectJobStatus
+                        ? {
+                              companyName: selectedCompany === 'all' ? '' : selectedCompany,
+                              jobStatus: selectJobStatus === 'all' ? '' : selectJobStatus
+                          }
+                        : {
+                              page: page
+                          }
             })
         );
 

@@ -21,32 +21,36 @@ const ApplicantDetails = ({ applicant }) => {
             >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography variant="subtitle1" fontWeight="bold">
-                        {applicant?.applied_user_dtls?.first_name} {applicant?.applied_user_dtls?.last_name}
+                        {/* {applicant?.applied_user_dtls?.first_name} {applicant?.applied_user_dtls?.last_name} */}
+                        {applicant?.applied_user_dtls?.company_name || 'N/A'}
                     </Typography>
                 </AccordionSummary>
 
                 <AccordionDetails>
                     <Typography sx={{ mb: 1 }}>
-                        <strong>Full Name:</strong> {applicant?.applied_user_dtls?.first_name}{' '}
-                        {applicant?.applied_user_dtls?.last_name || 'N/A'}
+                        <strong>Full Name: </strong>
+                        {applicant?.f_name} {applicant?.l_name || 'N/A'}
                     </Typography>
-                    <Typography sx={{ mb: 1 }}>
+                    {/* <Typography sx={{ mb: 1 }}>
+                        <strong>Last Name:</strong> {applicant?.l_name || 'N/A'}
+                    </Typography> */}
+                    {/* <Typography sx={{ mb: 1 }}>
                         <strong>Job Title:</strong> {applicant?.job_title || 'N/A'}
-                    </Typography>
-                    <Typography sx={{ mb: 1 }}>
+                    </Typography> */}
+                    {/* <Typography sx={{ mb: 1 }}>
                         <strong>Company:</strong> {applicant?.company_name || 'N/A'}
+                    </Typography> */}
+                    <Typography sx={{ mb: 1 }}>
+                        <strong>Email: </strong> {applicant?.email || 'N/A'}
                     </Typography>
                     <Typography sx={{ mb: 1 }}>
-                        <strong>Email:</strong> {applicant?.email || 'N/A'}
+                        <strong>Phone: </strong> {applicant?.phone || 'N/A'}
                     </Typography>
                     <Typography sx={{ mb: 1 }}>
-                        <strong>Phone:</strong> {applicant?.phone || 'N/A'}
+                        <strong>Description: </strong> {applicant?.description || 'N/A'}
                     </Typography>
                     <Typography sx={{ mb: 1 }}>
-                        <strong>Description:</strong> {applicant?.description || 'N/A'}
-                    </Typography>
-                    <Typography sx={{ mb: 1 }}>
-                        <strong>Applied Date:</strong> {new Date(applicant?.created_at).toLocaleString() || 'N/A'}
+                        <strong>Applied Date: </strong> {new Date(applicant?.created_at).toLocaleString() || 'N/A'}
                     </Typography>
 
                     {applicant?.supported_doc !== 'null' ? (

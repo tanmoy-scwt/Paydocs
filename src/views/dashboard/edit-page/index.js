@@ -96,7 +96,7 @@ const EditJobForm = () => {
                 dispatch(
                     openSnackbar({
                         open: true,
-                        message: response?.payload?.status ? 'Job Posted Successfully' : '',
+                        message: response?.payload?.status ? 'Job Updated Successfully' : '',
                         variant: 'alert',
                         alert: response?.payload?.status ? { color: 'success' } : { color: 'error' },
                         close: false
