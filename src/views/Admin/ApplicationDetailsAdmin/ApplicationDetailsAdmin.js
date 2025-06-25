@@ -16,7 +16,7 @@ import { workTypesData } from 'views/forms/FormSelectBoxData';
 const ApplicationDetailsAdmin = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const { id } = useParams();
+    const { id, page } = useParams();
     const JOB_APPLIED_DETAILS = useSelector((state) => state.getJobByID);
     const { isLoading, selectedJob } = JOB_APPLIED_DETAILS;
 
@@ -74,7 +74,11 @@ const ApplicationDetailsAdmin = () => {
     const navigate = useNavigate();
 
     const goBack = () => {
-        navigate('/admin-job-application');
+        if (page) {
+            navigate(`/admin-job-listing?page=${page}`);
+        } else {
+            navigate('/admin-job-listing');
+        }
     };
 
     if (isLoading) {
@@ -187,11 +191,22 @@ const ApplicationDetailsAdmin = () => {
                                 Application Details
                             </Typography>
 
-                            {selectedJob?.data?.[0]?.application_list &&
-                                selectedJob?.data?.[0]?.application_list.length > 0 &&
+                            {selectedJob?.data?.[0]?.application_list && selectedJob?.data?.[0]?.application_list.length > 0 ? (
                                 selectedJob?.data?.[0]?.application_list?.map((application, index) => {
                                     return <ApplicantDetails key={index} applicant={application} />;
-                                })}
+                                })
+                            ) : (
+                                <Grid
+                                    sx={{
+                                        height: 200,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <Typography>No Application Received</Typography>
+                                </Grid>
+                            )}
                         </Grid>
                     </CardContent>
                 </MainCard>

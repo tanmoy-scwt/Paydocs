@@ -43,7 +43,7 @@ const MainRoutes = {
             element: <JobListing />
         },
         {
-            path: '/job-listing/form/:id',
+            path: '/job-listing/form/:page/:id',
             element: <FillOutApplication />
         },
         {
@@ -55,7 +55,7 @@ const MainRoutes = {
             element: <AllJobsTable />
         },
         {
-            path: '/posted-job/:id',
+            path: '/posted-jobs/edit/:page/:id',
             element: <EditJobForm />
         },
         {
@@ -63,7 +63,7 @@ const MainRoutes = {
             element: <AppliedJobUser />
         },
         {
-            path: '/job-applied/:id',
+            path: '/job-applied/:page/:id',
             element: <ApplicationDetails />
         },
         {
@@ -71,7 +71,7 @@ const MainRoutes = {
             element: <TotalApplicant />
         },
         {
-            path: '/total-applicants/:id',
+            path: '/posted-jobs/application/:page/:id',
             element: <ApplicantDetailsUser />
         },
         {

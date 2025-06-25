@@ -71,7 +71,7 @@ const JobListing = () => {
 
     const handleFormOpenAction = (id) => {
         const ID = encrypt(id);
-        navigate(`/job-listing/form/${ID}`);
+        navigate(`/job-listing/form/${currentPage}/${ID}`);
         dispatch(fetchSelectedJobByIDFromAPI(`/job-details/${id}`));
     };
 
@@ -86,8 +86,6 @@ const JobListing = () => {
     const handlePageChange = useCallback(
         (event, value) => {
             setPage(value);
-            console.log(value);
-
             navigate('/job-listing?page=' + value);
         },
         [page]
@@ -129,7 +127,7 @@ const JobListing = () => {
 
     return (
         <>
-            <Grid sx={{ background: theme.palette.mode === 'dark' ? '' : '#fafafa' }}>
+            <Grid container sx={{ background: theme.palette.mode === 'dark' ? '' : '#fafafa' }}>
                 <Grid item xs={12}>
                     <MainCard sx={{ background: theme.palette.mode === 'dark' ? '' : '#fafafa' }} title="Job Listing" content={false}>
                         <Grid sx={{ paddingX: '1rem', paddingY: '0rem', paddingBottom: '1.5rem' }} spacing={2} container>
@@ -139,7 +137,7 @@ const JobListing = () => {
 
                             <Grid item xs={12} sm={12} lg={6}>
                                 <Grid container spacing={1}>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={12} md={4}>
                                         <JobListingSelectBox
                                             id="category"
                                             name="category"
@@ -162,7 +160,7 @@ const JobListing = () => {
                                     </Grid>
 
                                     {/* No of Applicants */}
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={12} md={4}>
                                         <JobListingSelectBox
                                             id="noOfApplicants"
                                             name="noOfApplicants"

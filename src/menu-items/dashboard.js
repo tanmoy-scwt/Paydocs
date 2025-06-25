@@ -31,21 +31,21 @@ const dashboard = {
     type: 'group',
     children: [
         {
-            id: 'default',
+            id: 'dashboard',
             title: <FormattedMessage id="dashboard" />,
             type: 'item',
             url: '/dashboard',
             icon: icons.HomeIcon,
             breadcrumbs: false
         },
-        {
-            id: 'profile-management',
-            title: <FormattedMessage id="profileManagement" />,
-            type: 'item',
-            url: '/profile-management',
-            icon: icons.Profile,
-            breadcrumbs: false
-        },
+        // {
+        //     id: 'profile-management',
+        //     title: <FormattedMessage id="profileManagement" />,
+        //     type: 'item',
+        //     url: '/profile-management',
+        //     icon: icons.Profile,
+        //     breadcrumbs: false
+        // },
         {
             id: 'job-listing',
             title: <FormattedMessage id="jobListing" />,
@@ -72,20 +72,20 @@ const dashboard = {
         },
         {
             id: 'job-applied',
-            title: <FormattedMessage id="jobApplied" />,
+            title: <FormattedMessage id="jobsApplied" />,
             type: 'item',
             url: '/job-applied',
             icon: icons.JobApplied,
             breadcrumbs: false
-        },
-        {
-            id: 'total-applicant',
-            title: <FormattedMessage id="totalApplicant" />,
-            type: 'item',
-            url: '/total-applicants',
-            icon: icons.TotalApplicants,
-            breadcrumbs: false
         }
+        // {
+        //     id: 'total-applicant',
+        //     title: <FormattedMessage id="totalApplicant" />,
+        //     type: 'item',
+        //     url: '/total-applicants',
+        //     icon: icons.TotalApplicants,
+        //     breadcrumbs: false
+        // }
     ]
 };
 

@@ -2,15 +2,15 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 
 const statusColors = {
-    0: '#FFC107', // Amber 500
+    0: '#F44336', // Red 500
     1: '#4CAF50', // Green 500
-    2: '#F44336' // Red 500
+    2: '#FFC107' // Amber 500
 };
 
 const textColors = {
-    0: '#000000',
+    0: '#ffffff',
     1: '#ffffff',
-    2: '#ffffff'
+    2: '#000000'
 };
 
 export default function StatusIndicator({ status = 0 }) {
@@ -18,9 +18,9 @@ export default function StatusIndicator({ status = 0 }) {
     const textColor = textColors[status] || '#000';
 
     const label = {
-        0: 'Approval Pending',
-        1: 'Job Approved',
-        2: 'Job Rejected'
+        0: 'Blocked',
+        1: 'Open',
+        2: 'Closed'
     }[status];
 
     return (

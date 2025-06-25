@@ -20,7 +20,6 @@ const JobApplicationAdmin = () => {
     const currentPage = parseInt(searchParams.get('page')) || 1;
     const ALL_JOBS_APPLIED = useSelector((state) => state.allJobs);
     const { isLoading, allJobs } = ALL_JOBS_APPLIED;
-    console.log(allJobs, 'allJobs');
 
     const { encrypt } = useCrypto();
 

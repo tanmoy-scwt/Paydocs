@@ -16,9 +16,24 @@ import { openSnackbar } from 'store/slices/snackbar';
 import ConfirmDeleteJobModal from 'ui-component/ConfirmDeleteJobModel/ConfirmDeleteJobModel';
 import StatusIndicator from 'ui-component/StatusIndicator/StatusIndicator';
 
-const JobPostBoxForTable = ({ action, jobDetails, setter }) => {
-    const { company_logo, status, id, title, company_name, job_description, location, work_type, salary_to, salary_from, category_dtls } =
-        jobDetails;
+const JobPostBoxForTable = ({ action, jobDetails, viewaction, setter }) => {
+    console.log(jobDetails);
+
+    const {
+        company_logo,
+        status,
+        id,
+        title,
+        application_list_count,
+        company_name,
+        job_description,
+        location,
+        work_type,
+        salary_to,
+        salary_from,
+        category_dtls
+    } = jobDetails;
+
     const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -94,10 +109,18 @@ const JobPostBoxForTable = ({ action, jobDetails, setter }) => {
                 </Box>
 
                 <Box sx={{ flex: 1 }}>
-                    <Typography component="h3" variant="body1" fontSize={18} fontWeight={600} mb={1}>
-                        {title || ''}
-                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography component="h3" variant="body1" fontSize={18} fontWeight={600} mb={0}>
+                            {title || ''}
+                        </Typography>
+                        <Typography component="h6" variant="body1" fontSize={14} fontWeight={600} mt={0}>
+                            Total Application : {application_list_count}
+                        </Typography>
+                    </Box>
                     <StatusIndicator status={status} />
+                    {/* <Typography component="h6" variant="body1" fontSize={14} fontWeight={600} mb={1}>
+                        Total Application : {application_list_count}
+                    </Typography> */}
                     <List
                         sx={{
                             display: 'flex',
@@ -142,6 +165,7 @@ const JobPostBoxForTable = ({ action, jobDetails, setter }) => {
                         {job_description &&
                             (!isViewMore && job_description.length > 365 ? `${job_description.slice(0, 300)}...` : job_description)}
                     </Typography>
+
                     {job_description?.length > 365 ? (
                         <CardActions sx={{ p: 0, px: 0, pt: 1 }}>
                             <Button
@@ -173,7 +197,7 @@ const JobPostBoxForTable = ({ action, jobDetails, setter }) => {
                 >
                     <AnimateButton sx={{ flex: 1 }}>
                         <Button
-                            onClick={() => action(id)}
+                            onClick={() => viewaction(id)}
                             sx={{
                                 backgroundColor: theme.palette.secondary.main,
                                 '&:hover': { backgroundColor: theme.palette.secondary.dark },
@@ -181,6 +205,25 @@ const JobPostBoxForTable = ({ action, jobDetails, setter }) => {
                                 width: '100%'
                             }}
                             variant="contained"
+                            size="large"
+                        >
+                            View
+                        </Button>
+                    </AnimateButton>
+                    <AnimateButton sx={{ flex: 1 }}>
+                        <Button
+                            onClick={() => action(id)}
+                            sx={{
+                                color: theme.palette.warning.dark,
+                                border: `1px solid ${theme.palette.warning.dark}`,
+                                // '&:hover': {
+                                //     backgroundColor: 'transparent',
+                                //     border: `1px solid ${theme.palette.warning.dark}`
+                                // },
+                                textTransform: 'capitalize',
+                                width: '100%'
+                            }}
+                            variant="outlined"
                             size="large"
                         >
                             Edit
@@ -218,6 +261,7 @@ const JobPostBoxForTable = ({ action, jobDetails, setter }) => {
 JobPostBoxForTable.propTypes = {
     title: PropTypes.string,
     action: PropTypes.func.isRequired,
+    viewaction: PropTypes.func.isRequired,
     jobDetails: PropTypes.shape({
         company_logo: PropTypes.string,
         company_name: PropTypes.string.isRequired,

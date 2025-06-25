@@ -48,6 +48,7 @@ const JobApplications = () => {
             return jobObj;
         });
     useEffect(() => {
+        if (currentPage) setPage(currentPage);
         dispatch(
             fetchAllJobsFromAPI({
                 API_PATH: '/current-user-job-application-list',
@@ -61,7 +62,7 @@ const JobApplications = () => {
 
     const handleViewButton = (id) => {
         const FORM_ID = encrypt(id);
-        navigate(`/job-applied/${FORM_ID}`);
+        navigate(`/job-applied/${currentPage}/${FORM_ID}`);
         console.log(id);
         dispatch(fetchSelectedJobByIDFromAPI(`/current-user-job-application-dtls/${id}`));
     };

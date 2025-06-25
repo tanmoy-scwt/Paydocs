@@ -11,7 +11,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import CurrentUserDetailsShimmer from 'ui-component/cards/Skeleton/CurrentUserDetailsShimmer';
 
 const CurrentUserDetails = () => {
-    const { id } = useParams();
+    const { id, page } = useParams();
     const { decrypt } = useCrypto();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const CurrentUserDetails = () => {
         <MainCard title="Current User Details" content={false}>
             {/* Back Button */}
             <Box display="flex" marginLeft={1} alignItems="center" mb={2}>
-                <IconButton onClick={() => navigate('/all-user')} aria-label="go back">
+                <IconButton onClick={() => navigate(`/companies?page=${page}`)} aria-label="go back">
                     <ArrowBackIcon />
                 </IconButton>
                 <Typography variant="h6" ml={1}>

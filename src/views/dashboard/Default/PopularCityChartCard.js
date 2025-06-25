@@ -94,7 +94,7 @@ const PopularCityChartCard = ({ isLoading, chartDataAPI }) => {
                             sx={{
                                 position: 'absolute',
                                 right: '4%',
-                                top: '50%',
+                                top: '60%',
                                 transform: 'translateY(-50%)',
                                 color: theme.palette.success.dark,
                                 ...labelStyles

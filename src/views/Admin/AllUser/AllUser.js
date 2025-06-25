@@ -46,6 +46,7 @@ const AllUser = () => {
             return jobObj;
         });
     useEffect(() => {
+        if (currentPage) setPage(currentPage);
         dispatch(fetchAllJobsFromAPI({ API_PATH: '/admin/user-list', params: { page: page } }));
         return () => {
             dispatch(clearJobData());
@@ -55,14 +56,14 @@ const AllUser = () => {
     const handleViewButton = (id) => {
         console.log(id, 'handle VB');
         const USER_ID = encrypt(id);
-        navigate(`/all-user/${USER_ID}`);
+        navigate(`/companies/${currentPage}/${USER_ID}`);
         // dispatch(fetchSelectedJobByIDFromAPI(`/admin/user-details/${id}`));
     };
 
     const handlePageChange = useCallback(
         (event, value) => {
             setPage(value);
-            navigate(`/all-user?page=${value}`);
+            navigate(`/companies?page=${value}`);
         },
         [page]
     );

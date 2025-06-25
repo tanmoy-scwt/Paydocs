@@ -8,6 +8,11 @@ const JobPostBoxTableSkeleton = () => {
                     display: 'flex',
                     alignItems: 'flex-start',
                     justifyContent: 'space-between',
+                    flexDirection: {
+                        xs: 'column', // extra small and up
+                        md: 'row', // medium and below
+                        lg: 'row' // large and above
+                    },
                     gap: 2,
                     padding: 2,
                     borderRadius: 1
@@ -27,7 +32,7 @@ const JobPostBoxTableSkeleton = () => {
                 </Avatar>
 
                 {/* Text Content Skeleton */}
-                <Box sx={{ flex: 1, mx: 2 }}>
+                <Box sx={{ flex: 1 }}>
                     <Grid item xs={12} md={6} lg={4}>
                         <Skeleton variant="text" width="60%" height={28} />
                     </Grid>

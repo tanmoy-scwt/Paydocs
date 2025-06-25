@@ -17,15 +17,31 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 }));
 
 const CompanyBoxCard = ({ isLoading, companyDetails }) => {
-    console.log(companyDetails);
-
     const theme = useTheme();
     const { user } = useAuth();
     return isLoading ? (
         <SkeletonEarningCard />
     ) : (
         <CardWrapper border={false} content={false}>
-            <Box sx={{ p: { xs: 2, sm: 2.25 } }}>
+            {/* <Box sx={{ p: { xs: 2, sm: 2.25 } }}> */}
+            <Box
+                sx={{
+                    px: {
+                        xs: '12px',
+                        sm: '16px',
+                        md: '18px',
+                        lg: '20px',
+                        xl: '24px'
+                    },
+                    py: {
+                        xs: '16px',
+                        sm: '24px',
+                        md: '28px',
+                        lg: '35px',
+                        xl: '40px'
+                    }
+                }}
+            >
                 <Grid container direction="column">
                     <Grid container justifyContent="space-between" alignItems="center">
                         {/* LEFT SIDE: Avatar + Company Name */}

@@ -47,7 +47,7 @@ const EditJobForm = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { id } = useParams();
+    const { id, page } = useParams();
     const selectedJOBValue = useSelector((state) => state.getJobByID);
     const JOB_POST_DETAILS = selectedJOBValue?.selectedJob;
     const { isLoadingFormData } = useSelector((state) => state.PostJobFormDataAPI);
@@ -369,7 +369,7 @@ const EditJobForm = () => {
                                     <Grid item>
                                         <AnimateButton>
                                             <Button
-                                                onClick={() => navigate('/posted-jobs')}
+                                                onClick={() => navigate(`/posted-jobs?page=${page}`)}
                                                 type="button"
                                                 sx={{
                                                     border: `1px solid ${theme.palette.secondary.main}`,

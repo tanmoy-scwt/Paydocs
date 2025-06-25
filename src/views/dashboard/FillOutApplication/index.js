@@ -9,7 +9,6 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@mui/system';
-import useAuth from 'hooks/useAuth';
 import { useNavigate, useParams } from 'react-router-dom';
 import FillOutApplicationSkeleton from 'ui-component/cards/Skeleton/FillOutApplicationSkeleton';
 import { fetchSelectedJobByIDFromAPI, postJobFormData } from 'store/jobThunks/jobThunks';
@@ -22,14 +21,15 @@ import { useDispatch } from 'store';
 const FillOutApplication = () => {
     const theme = useTheme();
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { id, page } = useParams();
     const { decrypt } = useCrypto();
     const PostJobFormDataAPI = useSelector((state) => state.PostJobFormDataAPI);
     const { isLoadingFormData } = PostJobFormDataAPI;
 
     const validationSchema = yup.object({
         email: yup.string().email('Enter a valid email').required('Email is required'),
-        job_title: yup.string().required('Job title is required'),
+        f_name: yup.string().required('First Name is required'),
+        l_name: yup.string().required('Last Name is required'),
         company_name: yup.string().required('Company name is required'),
         phone: yup
             .string()
@@ -40,16 +40,16 @@ const FillOutApplication = () => {
 
     const jobDetails = useSelector((state) => state.getJobByID);
     const { isLoading, selectedJob } = jobDetails;
-    const { user } = useAuth();
     const dispatch = useDispatch();
 
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
             company_name: selectedJob?.data?.company_name || '',
-            email: user?.email || '',
-            phone: user?.mobile || '',
-            job_title: selectedJob?.data?.title || '',
+            email: '',
+            phone: '',
+            f_name: '',
+            l_name: '',
             description: '',
             supported_doc: null
         },
@@ -122,7 +122,7 @@ const FillOutApplication = () => {
                     <Divider />
                     <form onSubmit={formik.handleSubmit}>
                         <Grid sx={{ paddingX: '1rem', paddingY: '2rem' }} container spacing={gridSpacing}>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12} sm={12}>
                                 <TextField
                                     fullWidth
                                     id="company_name"
@@ -139,15 +139,27 @@ const FillOutApplication = () => {
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
-                                    id="job_title"
-                                    name="job_title"
-                                    label="Job Title"
-                                    disabled
-                                    value={formik.values.job_title}
+                                    id="f_name"
+                                    name="f_name"
+                                    label="First Name"
+                                    value={formik.values.f_name}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    error={formik.touched.job_title && Boolean(formik.errors.job_title)}
-                                    helperText={formik.touched.job_title && formik.errors.job_title}
+                                    error={formik.touched.f_name && Boolean(formik.errors.f_name)}
+                                    helperText={formik.touched.f_name && formik.errors.f_name}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    id="l_name"
+                                    name="l_name"
+                                    label="Last Name"
+                                    value={formik.values.l_name}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.l_name && Boolean(formik.errors.l_name)}
+                                    helperText={formik.touched.l_name && formik.errors.l_name}
                                 />
                             </Grid>
 
@@ -271,7 +283,7 @@ const FillOutApplication = () => {
                             <Grid item>
                                 <AnimateButton>
                                     <Button
-                                        onClick={() => navigate('/job-listing')}
+                                        onClick={() => navigate(`/job-listing?page=${page}`)}
                                         type="button"
                                         sx={{
                                             border: `1px solid ${theme.palette.secondary.main}`,

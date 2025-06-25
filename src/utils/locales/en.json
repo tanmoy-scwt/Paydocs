@@ -2,7 +2,7 @@
     "jobManagement": "Job Management",
     "allUser": "All User",
     "jobCategory": "All Categories",
-    "jobApplied": "Job Applied",
+    "jobsApplied": "Jobs Applied",
 
     "dashboard": "Dashboard",
     "default": "Default",
@@ -157,6 +157,7 @@
 
     "account-settings": "Account settings",
     "profile-management": "Profile Management",
+    "category-management": "All Categories",
     "logout": "Logout",
 
     "more-items": "More Items"

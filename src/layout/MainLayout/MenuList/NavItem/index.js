@@ -67,6 +67,8 @@ const NavItem = ({ item, level, parentId, isParents = false }) => {
             .toString()
             .split('/')
             .findIndex((id) => id === item.id);
+        console.log(currentIndex, document.location.pathname, item);
+
         if (currentIndex > -1) {
             dispatch(activeItem([item.id]));
         }
@@ -87,8 +89,12 @@ const NavItem = ({ item, level, parentId, isParents = false }) => {
                     disableRipple={!drawerOpen}
                     sx={{
                         zIndex: 1201,
-                        borderRadius: `${borderRadius}px`,
+                        // borderRadius: `${borderRadius}px`,
                         mb: 0.5,
+                        border: '1px solid transparent',
+                        display: 'inline-flex',
+                        paddingRight: drawerOpen ? '2rem' : '1rem',
+                        borderRadius: 20,
                         pl: drawerOpen ? `${level * 24}px` : 1.25,
                         ...(drawerOpen &&
                             level === 1 &&
@@ -170,6 +176,7 @@ const NavItem = ({ item, level, parentId, isParents = false }) => {
                     {drawerOpen && item.chip && (
                         <Chip
                             color={item.chip.color}
+                            // sx={{ border: '2px solid red' }}
                             variant={item.chip.variant}
                             size={item.chip.size}
                             label={item.chip.label}

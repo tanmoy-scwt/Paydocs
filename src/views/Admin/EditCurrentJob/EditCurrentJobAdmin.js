@@ -43,7 +43,7 @@ const EditCurrentJobAdmin = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { id } = useParams();
+    const { id, page } = useParams();
     const { decrypt } = useCrypto();
 
     const selectedJOBValue = useSelector((state) => state.getJobByID);
@@ -405,7 +405,9 @@ const EditCurrentJobAdmin = () => {
                                     <Grid item>
                                         <AnimateButton>
                                             <Button
-                                                onClick={() => navigate('/job-management')}
+                                                onClick={() =>
+                                                    page ? navigate(`/admin-job-listing?page=${page}`) : navigate('/admin-job-listing')
+                                                }
                                                 type="button"
                                                 sx={{
                                                     border: `1px solid ${theme.palette.secondary.main}`,

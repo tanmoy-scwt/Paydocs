@@ -1,5 +1,5 @@
 // material-ui
-import { Box, Divider, Grid, Pagination, Typography } from '@mui/material';
+import { Box, Divider, Grid, Pagination, Skeleton, Typography } from '@mui/material';
 
 // project imports
 import { gridSpacing } from 'store/constant';
@@ -14,6 +14,15 @@ import { setJobParams } from 'store/slices/JobsSlices/allJobsSlice';
 import JobPostBoxTableSkeleton from 'ui-component/cards/Skeleton/JobPostBoxTableSkeleton';
 import JobPostBoxTable from 'ui-component/JobPostBoxForTable/JobPostBoxForTable';
 import useCrypto from 'hooks/useCrypto';
+import JobListingSelectBox from 'ui-component/JobListingSelectBox/JobListingSelectBox';
+import useAdminAllUserList from 'hooks/useAdminAllUserList';
+
+const jobStatusOptions = [
+    { value: 'all', label: 'All' },
+    { value: '0', label: 'Blocked' },
+    { value: '1', label: 'Open' },
+    { value: '2', label: 'Closed' }
+];
 
 const JobManagement = () => {
     const navigate = useNavigate();
@@ -23,37 +32,125 @@ const JobManagement = () => {
     const dispatch = useDispatch();
     const [page, setPage] = useState(1);
     const [deleted, setDeleted] = useState(false);
+    const [selectJobStatus, setselectJobStatus] = useState('');
     const allJobsFromAPI = useSelector((state) => state.allJobs);
     const { isLoading, allJobs } = allJobsFromAPI;
     const ALL_JOBS_LIST_ARRAY = allJobs?.status === true ? allJobs?.data?.data : [];
     const TOTAL_PAGES = allJobs?.status === true ? allJobs?.data?.last_page : 1;
     const { encrypt } = useCrypto();
+    const { adminUserList, loadingAdminUserList } = useAdminAllUserList('/admin/job-post-for-company-list');
+    const [allCompanyList, setAllCompanyList] = useState([]);
+    const [selectedCompany, setSelectedCompany] = useState('');
+
     const handleFormOpenAction = (id) => {
         const JOB_ID = encrypt(id);
-        navigate(`/job-management/${JOB_ID}`);
+        if (currentPage) {
+            navigate(`/admin-job-listing/${currentPage}/${JOB_ID}`);
+        }
         dispatch(fetchSelectedJobByIDFromAPI(`/admin/job-details/${id}`));
     };
 
+    const handleViewButton = (id) => {
+        const FORM_ID = encrypt(id);
+        navigate(`/admin-job-application/${currentPage}/${FORM_ID}`);
+        dispatch(fetchSelectedJobByIDFromAPI(`/admin/application-list-of-job/${id}`));
+    };
     const handlePageChange = useCallback(
         (event, value) => {
             setPage(value);
-            navigate(`/job-management?page=${value}`);
+            navigate(`/admin-job-listing?page=${value}`);
         },
         [page]
     );
+    const handleFilterChange = (setter, value) => {
+        setter(value);
+    };
 
     useEffect(() => {
         if (currentPage) setPage(currentPage);
-        dispatch(fetchAllJobsFromAPI({ API_PATH: '/admin/job-list', params: { page: page } }));
+        dispatch(
+            fetchAllJobsFromAPI({
+                API_PATH: '/admin/job-list',
+                params: {
+                    page: page,
+                    companyName: selectedCompany === 'all' ? '' : selectedCompany,
+                    jobStatus: selectJobStatus === 'all' ? '' : selectJobStatus
+                }
+            })
+        );
         dispatch(setJobParams({ page: 1, category: 2 }));
-    }, [page, currentPage, deleted]);
+    }, [page, currentPage, deleted, selectedCompany, selectJobStatus]);
 
+    useEffect(() => {
+        if (!loadingAdminUserList) {
+            console.log(adminUserList);
+            const newDataAdminUserList = adminUserList?.map((user) => {
+                const company = user?.company_name?.split(' ');
+                const companyNameNew = company?.map((nameValue) => {
+                    const name = nameValue?.toLowerCase();
+                    return name[0].toUpperCase() + name.slice(1);
+                });
+
+                const userObj = {
+                    value: user?.company_name,
+                    // label: `${user?.email} (${user?.first_name} ${user?.last_name})`
+                    label: `${companyNameNew?.join(' ')}`
+                };
+                return userObj;
+            });
+            newDataAdminUserList?.unshift({
+                value: 'all',
+                label: 'All'
+            });
+            setAllCompanyList(newDataAdminUserList);
+        }
+    }, [adminUserList]);
     return (
         <>
             <Grid sx={{ background: theme.palette.mode === 'dark' ? '' : '#fafafa' }}>
                 <Grid item xs={12}>
                     <MainCard sx={{ background: theme.palette.mode === 'dark' ? '' : '#fafafa' }} title="Manage All Jobs" content={false}>
-                        <Box height="1rem" />
+                        <Grid sx={{ paddingX: '1rem', paddingY: '0rem', paddingBottom: '1.5rem' }} spacing={2} container>
+                            <Grid item xs={12} sm={12} lg={12}>
+                                <Grid container spacing={1}>
+                                    {/* No of Applicants */}
+                                    {!loadingAdminUserList && allCompanyList ? (
+                                        <>
+                                            <Grid item xs={12} sm={12} md={6}>
+                                                <JobListingSelectBox
+                                                    id="companyName"
+                                                    name="companyName"
+                                                    placeholder="Company Name"
+                                                    value={selectedCompany}
+                                                    action={(e) => handleFilterChange(setSelectedCompany, e.target.value)}
+                                                    allOptions={allCompanyList}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} sm={12} md={6}>
+                                                <JobListingSelectBox
+                                                    id="selectJobStatus"
+                                                    name="selectJobStatus"
+                                                    placeholder="Job Status"
+                                                    value={selectJobStatus}
+                                                    action={(e) => handleFilterChange(setselectJobStatus, e.target.value)}
+                                                    allOptions={jobStatusOptions}
+                                                />
+                                            </Grid>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Grid item xs={12} sm={12} md={6}>
+                                                <Skeleton variant="rectangular" height={48} sx={{ borderRadius: 2 }} />
+                                            </Grid>
+                                            <Grid item xs={12} sm={12} md={6}>
+                                                <Skeleton variant="rectangular" height={48} sx={{ borderRadius: 2 }} />
+                                            </Grid>
+                                        </>
+                                    )}
+                                    {/* No of Applicants */}
+                                </Grid>
+                            </Grid>
+                        </Grid>
                         <Divider />
                         <Grid sx={{ paddingX: '0rem', paddingY: '0rem' }} container spacing={gridSpacing}>
                             <Grid item xs={12} sm={12} lg={12}>
@@ -64,6 +161,7 @@ const JobManagement = () => {
                                         <JobPostBoxTable
                                             key={`JobProfileAvailable${index}`}
                                             jobDetails={jobProfile}
+                                            viewaction={() => handleViewButton(jobProfile?.id)}
                                             action={() => handleFormOpenAction(jobProfile?.id)}
                                             setter={setDeleted}
                                         />

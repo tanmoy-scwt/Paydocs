@@ -15,7 +15,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 const ApplicationDetails = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const { id } = useParams();
+    const { id, page } = useParams();
     const JOB_APPLIED_DETAILS = useSelector((state) => state.getJobByID);
     const { isLoading, selectedJob } = JOB_APPLIED_DETAILS;
     const { decrypt } = useCrypto();
@@ -51,7 +51,7 @@ const ApplicationDetails = () => {
     const navigate = useNavigate();
 
     const goBack = () => {
-        navigate('/job-applied');
+        navigate(`/job-applied?page=${page}`);
     };
 
     if (isLoading) {

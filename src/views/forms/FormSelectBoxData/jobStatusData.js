@@ -1,7 +1,7 @@
 const jobStatusData = [
-    { value: 1, label: 'Job Pending' },
-    { value: 2, label: 'Job Approved' },
-    { value: 3, label: 'Job Rejected' }
+    { value: 1, label: 'Blocked' },
+    { value: 2, label: 'Open' },
+    { value: 3, label: 'Closed' }
 ];
 
 export default jobStatusData;

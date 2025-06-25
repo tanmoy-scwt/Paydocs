@@ -38,11 +38,11 @@ const AdminRoutes = {
             element: <ProfileManagement />
         },
         {
-            path: '/job-management',
+            path: '/admin-job-listing',
             element: <JobManagement />
         },
         {
-            path: '/job-management/:id',
+            path: '/admin-job-listing/:page/:id',
             element: <EditCurrentJobAdmin />
         },
         {
@@ -50,11 +50,11 @@ const AdminRoutes = {
             element: <AdminPostJob />
         },
         {
-            path: '/all-user',
+            path: '/companies',
             element: <AllUser />
         },
         {
-            path: '/all-user/:id',
+            path: '/companies/:page/:id',
             element: <CurrentUserDetails />
         },
         {
@@ -66,7 +66,7 @@ const AdminRoutes = {
             element: <JobApplicationAdmin />
         },
         {
-            path: '/admin-job-application/:id',
+            path: '/admin-job-application/:page/:id',
             element: <ApplicationDetailsAdmin />
         },
         {

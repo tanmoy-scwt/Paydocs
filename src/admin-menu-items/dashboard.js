@@ -24,26 +24,26 @@ const dashboard = {
     type: 'group',
     children: [
         {
-            id: 'default',
+            id: 'dashboard',
             title: <FormattedMessage id="dashboard" />,
             type: 'item',
             url: '/dashboard',
             icon: icons.HomeIcon,
             breadcrumbs: false
         },
+        // {
+        //     id: 'profile-management',
+        //     title: <FormattedMessage id="profileManagement" />,
+        //     type: 'item',
+        //     url: '/profile-management',
+        //     icon: icons.ProfileIcon,
+        //     breadcrumbs: false
+        // },
         {
-            id: 'profile-management',
-            title: <FormattedMessage id="profileManagement" />,
+            id: 'AdminjobListing',
+            title: <FormattedMessage id="jobListing" />,
             type: 'item',
-            url: '/profile-management',
-            icon: icons.ProfileIcon,
-            breadcrumbs: false
-        },
-        {
-            id: 'jobsManagement',
-            title: <FormattedMessage id="jobManagement" />,
-            type: 'item',
-            url: '/job-management',
+            url: '/admin-job-listing',
             icon: icons.JobPostingIcon,
             breadcrumbs: false
         },
@@ -56,29 +56,29 @@ const dashboard = {
             breadcrumbs: false
         },
         {
-            id: 'all-user',
-            title: <FormattedMessage id="allUser" />,
+            id: 'Companies',
+            title: <FormattedMessage id="Companies" />,
             type: 'item',
-            url: '/all-user',
+            url: '/companies',
             icon: icons.AllUsersIcon,
             breadcrumbs: false
-        },
-        {
-            id: 'job-category',
-            title: <FormattedMessage id="jobCategory" />,
-            type: 'item',
-            url: '/job-category',
-            icon: icons.CategoryIcon,
-            breadcrumbs: false
-        },
-        {
-            id: 'admin-job-application',
-            title: <FormattedMessage id="jobApplication" />,
-            type: 'item',
-            url: '/admin-job-application',
-            icon: icons.IconDeviceAnalytics,
-            breadcrumbs: false
         }
+        // {
+        //     id: 'job-category',
+        //     title: <FormattedMessage id="jobCategory" />,
+        //     type: 'item',
+        //     url: '/job-category',
+        //     icon: icons.CategoryIcon,
+        //     breadcrumbs: false
+        // }
+        // {
+        //     id: 'admin-job-application',
+        //     title: <FormattedMessage id="jobApplication" />,
+        //     type: 'item',
+        //     url: '/admin-job-application',
+        //     icon: icons.IconDeviceAnalytics,
+        //     breadcrumbs: false
+        // }
     ]
 };
 

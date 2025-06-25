@@ -7,6 +7,9 @@ const FillOutApplicationSkeleton = () => {
     return (
         <MainCard title="Fill Out Your Application Below" content={false}>
             <Grid sx={{ paddingX: '1rem', paddingY: '2rem' }} container spacing={2}>
+                <Grid item xs={12} sm={12}>
+                    <Skeleton sx={{ borderRadius: '10px' }} variant="rectangular" height={50} />
+                </Grid>
                 <Grid item xs={12} sm={6}>
                     <Skeleton sx={{ borderRadius: '10px' }} variant="rectangular" height={50} />
                 </Grid>
