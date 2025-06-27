@@ -4,6 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import axiosServices from 'utils/axios';
 
 const SearchBox = ({ handleSearchChange }) => {
     const [jobInput, setJobInput] = useState('');
@@ -22,7 +23,7 @@ const SearchBox = ({ handleSearchChange }) => {
 
     const handleCompanyTitleChange = (e) => {
         const newValue = e.target.value;
-        setCompanySearchSuggetion(true);
+        // setCompanySearchSuggetion(true);
         setJobInput(newValue);
         const filterData = allCompanyName?.filter((item) => item?.toLowerCase()?.includes(newValue?.toLowerCase()));
         setFilteredCompanyName(filterData);
@@ -33,7 +34,7 @@ const SearchBox = ({ handleSearchChange }) => {
                 handleSearchChange(['', inputLocation]);
             }
             setFilteredCompanyName(allCompanyName);
-            setCompanySearchSuggetion(false);
+            // setCompanySearchSuggetion(false);
         }
     };
 
@@ -41,11 +42,14 @@ const SearchBox = ({ handleSearchChange }) => {
         const newValue = e.target.value;
         setLocationSuggestion(true);
         setInputLocation(newValue);
-        const filterData = allJobsLocation?.filter((item) => item?.toLowerCase()?.includes(newValue?.toLowerCase()));
+        // const filterData = allJobsLocation?.filter((item) => item?.toLowerCase()?.includes(newValue?.toLowerCase()));
+        const filterData = allJobsLocation?.filter((item = '') => item.toLowerCase().includes(newValue?.toLowerCase() || ''));
+
         setFilteredJobsLocation(filterData);
         if (newValue.trim().length === 0) {
             if (jobInput.trim().length === 0) {
                 handleSearchChange(['', '']);
+                setFilteredJobsLocation(allJobsLocation);
             } else {
                 handleSearchChange([jobInput, '']);
             }
@@ -54,18 +58,34 @@ const SearchBox = ({ handleSearchChange }) => {
         }
     };
 
-    useEffect(() => {
-        const allJobsArr = allJobs?.allJobs?.data?.jobList?.data;
-        const companyTitleNameArr =
-            allJobsArr && allJobsArr.length > 0
-                ? Array.from(new Set(allJobsArr.flatMap((jobProfile) => [jobProfile?.title, jobProfile?.company_name])))
-                : [];
-        const locationNameArr =
-            allJobsArr && allJobsArr.length > 0 ? Array.from(new Set(allJobsArr.map((jobProfile) => jobProfile?.location))) : [];
+    const fetchCompanyName = async () => {
+        const response = await axiosServices('/all-job-list-search-options'); // Replace with your API endpoint
+        const CompanyListALl = response?.data;
+        if (CompanyListALl?.status) {
+            const companyName = CompanyListALl?.data?.companyNameList;
+            const jobTitle = CompanyListALl?.data?.jobTitleList;
+            const location = CompanyListALl?.data?.locationList;
+            const companyTitleNameArr = [...companyName, ...jobTitle];
+            setAllCompanyName(companyTitleNameArr);
+            setJobsLocation(location);
+        }
+    };
 
-        setAllCompanyName(companyTitleNameArr);
-        setJobsLocation(locationNameArr);
+    useEffect(() => {
+        // const allJobsArr = allJobs?.allJobs?.data?.jobList?.data;
+        // const companyTitleNameArr =
+        //     allJobsArr && allJobsArr.length > 0
+        //         ? Array.from(new Set(allJobsArr.flatMap((jobProfile) => [jobProfile?.title, jobProfile?.company_name])))
+        //         : [];
+        // const locationNameArr =
+        //     allJobsArr && allJobsArr.length > 0 ? Array.from(new Set(allJobsArr.map((jobProfile) => jobProfile?.location))) : [];
+        // setAllCompanyName(companyTitleNameArr);
+        // setJobsLocation(locationNameArr);
+        fetchCompanyName();
     }, [allJobs]);
+    useEffect(() => {
+        fetchCompanyName();
+    }, []);
 
     const inputStyles = {
         height: '40px',
@@ -116,6 +136,29 @@ const SearchBox = ({ handleSearchChange }) => {
                     autoComplete="off"
                     name={'searchInputCompany'}
                     onChange={handleCompanyTitleChange}
+                    // onMouseDown={() => {
+                    //     setCompanySearchSuggetion(true);
+                    //     if (jobInput.trim().length === 0) {
+                    //         handleSearchChange(['', '']);
+                    //     } else {
+                    //         handleSearchChange(['', inputLocation]);
+                    //     }
+                    // }}
+                    onMouseDown={() => {
+                        setCompanySearchSuggetion(true);
+                        // If empty, show all
+                        if (jobInput.trim().length === 0) {
+                            setFilteredCompanyName(allCompanyName);
+                        } else {
+                            const filterData = allCompanyName?.filter((item) => item?.toLowerCase()?.includes(jobInput?.toLowerCase()));
+                            setFilteredCompanyName(filterData);
+                        }
+                    }}
+                    onBlur={() => {
+                        setTimeout(() => {
+                            setCompanySearchSuggetion(false);
+                        }, 200);
+                    }}
                     startAdornment={
                         <InputAdornment position="start">
                             <SearchIcon fontSize="small" sx={{ color: theme.palette.grey[500] }} />
@@ -192,6 +235,26 @@ const SearchBox = ({ handleSearchChange }) => {
                     name={'searchLocation'}
                     autoComplete="off"
                     onChange={handleLocationChange}
+                    // onMouseDown={() => {
+                    //     setLocationSuggestion(true);
+                    // }}
+                    onMouseDown={() => {
+                        setLocationSuggestion(true);
+                        // If empty, show all
+                        if (inputLocation.trim().length === 0) {
+                            setFilteredJobsLocation(allJobsLocation);
+                        } else {
+                            const filterData = allJobsLocation?.filter((item = '') =>
+                                item.toLowerCase().includes(inputLocation?.toLowerCase() || '')
+                            );
+                            setFilteredJobsLocation(filterData);
+                        }
+                    }}
+                    onBlur={() => {
+                        setTimeout(() => {
+                            setLocationSuggestion(false);
+                        }, 200);
+                    }}
                     startAdornment={
                         <InputAdornment position="start">
                             <LocationOnIcon fontSize="small" sx={{ color: theme.palette.grey[500] }} />

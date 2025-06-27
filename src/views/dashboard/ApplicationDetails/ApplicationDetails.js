@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CardContent, Typography, Grid, Divider, Button, Stack, IconButton, Tooltip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, useTheme } from '@mui/system';
@@ -11,6 +11,7 @@ import { fetchSelectedJobByIDFromAPI } from 'store/jobThunks/jobThunks';
 import MainCard from 'ui-component/cards/MainCard';
 import useCrypto from 'hooks/useCrypto';
 import DownloadIcon from '@mui/icons-material/Download';
+import useJobCategoryList from 'hooks/useListCategory';
 
 const ApplicationDetails = () => {
     const theme = useTheme();
@@ -55,6 +56,17 @@ const ApplicationDetails = () => {
     const goBack = () => {
         navigate(`/job-applied?page=${page}`);
     };
+
+    const { categories, loadingCategory } = useJobCategoryList('/job-category-list');
+
+    const [categoryName, setCategoryName] = useState('');
+    useEffect(() => {
+        if (!loadingCategory) {
+            console.log(selectedJob?.data?.job_dtls?.job_category_id);
+
+            setCategoryName(categories.find((category) => category.value === selectedJob?.data?.job_dtls?.job_category_id)?.label || '');
+        }
+    }, [loadingCategory, categories, selectedJob]);
 
     if (isLoading) {
         return <ApplicationDetailsShimmer />;
@@ -103,6 +115,12 @@ const ApplicationDetails = () => {
                                 </Typography>
                                 <Typography variant="body1">{application?.work_type}</Typography>
                             </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Typography variant="subtitle2" gutterBottom>
+                                    Category
+                                </Typography>
+                                <Typography variant="body1">{categoryName || 'N/A'}</Typography>
+                            </Grid>
 
                             <Grid item xs={12} sm={6}>
                                 <Typography variant="subtitle2" gutterBottom>
@@ -141,6 +159,15 @@ const ApplicationDetails = () => {
                                     Applied On
                                 </Typography>
                                 <Typography variant="body1">{formattedDate}</Typography>
+                            </Grid>
+                            <Divider sx={{ my: 4 }} />
+                            <Grid item xs={12} sm={12}>
+                                <Typography variant="subtitle2" gutterBottom>
+                                    Job Description
+                                </Typography>
+                                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                                    {application?.job_description}
+                                </Typography>
                             </Grid>
                         </Grid>
                         <Divider sx={{ my: 4 }} />
@@ -216,14 +243,6 @@ const ApplicationDetails = () => {
                                 </Grid>
                             </Grid>
                         </Grid>
-
-                        <Divider sx={{ my: 4 }} />
-                        <Typography variant="h6" gutterBottom>
-                            Job Description
-                        </Typography>
-                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                            {application?.job_description}
-                        </Typography>
                     </CardContent>
                 </MainCard>
             </Grid>

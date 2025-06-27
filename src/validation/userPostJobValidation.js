@@ -30,16 +30,16 @@ const userPostJobValidation = yup.object({
         .of(yup.number().required('Each value in salary range is required'))
         .min(2, 'Salary range must have min and max')
         .max(2, 'Salary range must have min and max')
-        .required('Salary range is required'),
+        .required('Salary range is required')
 
-    uploadcompanylogo: yup
-        .mixed()
-        .required('Company logo is required')
-        .test('fileType', 'Only JPEG or PNG files are allowed', (value) => {
-            if (!value) return false;
-            if (typeof value === 'string') return true;
-            return ['image/jpeg', 'image/png'].includes(value.type);
-        })
+    // uploadcompanylogo: yup
+    //     .mixed()
+    //     .required('Company logo is required')
+    //     .test('fileType', 'Only JPEG or PNG files are allowed', (value) => {
+    //         if (!value) return false;
+    //         if (typeof value === 'string') return true;
+    //         return ['image/jpeg', 'image/png'].includes(value.type);
+    //     })
 });
 
 export default userPostJobValidation;

@@ -32,7 +32,7 @@ const JobManagement = () => {
     const dispatch = useDispatch();
     const [page, setPage] = useState(1);
     const [deleted, setDeleted] = useState(false);
-    const [selectJobStatus, setselectJobStatus] = useState('');
+    const [selectJobStatus, setselectJobStatus] = useState('1');
     const allJobsFromAPI = useSelector((state) => state.allJobs);
     const { isLoading, allJobs } = allJobsFromAPI;
     const ALL_JOBS_LIST_ARRAY = allJobs?.status === true ? allJobs?.data?.data : [];
@@ -41,6 +41,8 @@ const JobManagement = () => {
     const { adminUserList, loadingAdminUserList } = useAdminAllUserList('/admin/job-post-for-company-list');
     const [allCompanyList, setAllCompanyList] = useState([]);
     const [selectedCompany, setSelectedCompany] = useState('');
+
+    console.log(ALL_JOBS_LIST_ARRAY, 'ALL_JOBS_LIST_ARRAY');
 
     const handleFormOpenAction = (id) => {
         const JOB_ID = encrypt(id);
@@ -78,7 +80,8 @@ const JobManagement = () => {
                               jobStatus: selectJobStatus === 'all' ? '' : selectJobStatus
                           }
                         : {
-                              page: page
+                              page: page,
+                              jobStatus: '1'
                           }
             })
         );

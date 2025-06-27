@@ -7,6 +7,7 @@ import LatestJobsTable from './LatestJobsTable';
 import axiosServices from 'utils/axios';
 import useAuth from 'hooks/useAuth';
 import { gridSpacing } from 'store/constant';
+import { Link } from 'react-router-dom';
 const Dashboard = () => {
     const [isLoading, setLoading] = useState(true);
     const [dashboardData, setDashboardData] = useState('');
@@ -68,16 +69,20 @@ const Dashboard = () => {
                                   {
                                       profile: '',
                                       totalCount: `${dashboardData?.totalJobPost}`,
-                                      titleName: 'Total Job Post'
+                                      titleName: 'Total Job Post',
+                                      pathName: '/posted-jobs'
                                   },
                                   {
                                       profile: null,
                                       totalCount: `${dashboardData?.totalJobApplication}`,
-                                      titleName: 'Total Job Application'
+                                      titleName: 'Total Job Application',
+                                      pathName: '/posted-jobs'
                                   }
                               ]?.map((companyDetails, index) => (
                                   <Grid item key={index} xs={12} sm={12} md={6}>
-                                      <CompanyBoxCard isLoading={isLoading} companyDetails={companyDetails} />
+                                      <Link style={{ textDecoration: 'none' }} to={companyDetails.pathName}>
+                                          <CompanyBoxCard isLoading={isLoading} companyDetails={companyDetails} />
+                                      </Link>
                                   </Grid>
                               ))
                             : [1, 2].map((_, index) => (

@@ -74,6 +74,11 @@ const JobListing = () => {
         navigate(`/job-listing/form/${currentPage}/${ID}`);
         dispatch(fetchSelectedJobByIDFromAPI(`/job-details/${id}`));
     };
+    const handleDetailsOpenAction = (id) => {
+        const ID = encrypt(id);
+        navigate(`/job-listing/details/${currentPage}/${ID}`);
+        dispatch(fetchSelectedJobByIDFromAPI(`/job-details/${id}`));
+    };
 
     const handleFilterChange = (setter, value) => {
         setter(value);
@@ -184,6 +189,7 @@ const JobListing = () => {
                                             key={`JobProfileAvailable${index}`}
                                             jobDetails={jobProfile}
                                             action={() => handleFormOpenAction(jobProfile?.id)}
+                                            viewAction={() => handleDetailsOpenAction(jobProfile?.id)}
                                         />
                                     ))}
                                 {isLoading && Array.from({ length: 10 }).map((_, index) => <JobPostBoxTableSkeleton key={index} />)}

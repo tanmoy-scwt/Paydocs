@@ -40,6 +40,14 @@ const dashboard = {
         //     breadcrumbs: false
         // },
         {
+            id: 'Companies',
+            title: <FormattedMessage id="Companies" />,
+            type: 'item',
+            url: '/companies',
+            icon: icons.AllUsersIcon,
+            breadcrumbs: false
+        },
+        {
             id: 'AdminjobListing',
             title: <FormattedMessage id="jobListing" />,
             type: 'item',
@@ -54,15 +62,8 @@ const dashboard = {
             url: '/admin-post-job',
             icon: icons.IconFileText,
             breadcrumbs: false
-        },
-        {
-            id: 'Companies',
-            title: <FormattedMessage id="Companies" />,
-            type: 'item',
-            url: '/companies',
-            icon: icons.AllUsersIcon,
-            breadcrumbs: false
         }
+
         // {
         //     id: 'job-category',
         //     title: <FormattedMessage id="jobCategory" />,

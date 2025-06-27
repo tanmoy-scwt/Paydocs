@@ -8,10 +8,22 @@ import bag from 'assets/images/icons/bag.svg';
 import { useTheme } from '@mui/system';
 import { memo, useCallback, useState } from 'react';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import defaultImage from '../../../../assets/images/jobPosting.jpg';
 
-const JobPostBoxTable = ({ action, jobDetails }) => {
-    const { company_logo, id, title, company_name, job_description, location, work_type, salary_to, salary_from, category_dtls } =
-        jobDetails;
+const JobPostBoxTable = ({ viewAction, action, jobDetails }) => {
+    const {
+        company_logo,
+        id,
+        title,
+        company_name,
+        job_description,
+        location,
+        work_type,
+        salary_to,
+        salary_from,
+        category_dtls,
+        user_dtls
+    } = jobDetails;
     const theme = useTheme();
     const [isViewMore, setViewMore] = useState(false);
 
@@ -59,7 +71,7 @@ const JobPostBoxTable = ({ action, jobDetails }) => {
                             border: !company_logo ? '1px solid #ccc' : 'none',
                             mx: 0 // removes auto-centering
                         }}
-                        src={company_logo ? `${process.env.REACT_APP_API_IMAGE_URL}/${company_logo}` : ''}
+                        src={user_dtls?.profile_pic ? `${process.env.REACT_APP_API_IMAGE_URL}/${user_dtls?.profile_pic}` : defaultImage}
                     />
                 </Box>
 
@@ -142,6 +154,23 @@ const JobPostBoxTable = ({ action, jobDetails }) => {
                         py: 0
                     }}
                 >
+                    <AnimateButton sx={{ flex: 1 }}>
+                        <Button
+                            onClick={() => viewAction(id)}
+                            sx={{
+                                // backgroundColor: theme.palette.secondary.main,
+                                // '&:hover': { backgroundColor: theme.palette.secondary.dark },
+                                color: theme.palette.secondary.main,
+                                border: `1px solid ${theme.palette.secondary.main}`,
+                                textTransform: 'capitalize',
+                                width: '100%'
+                            }}
+                            variant="outlined"
+                            size="large"
+                        >
+                            View Details
+                        </Button>
+                    </AnimateButton>
                     <AnimateButton sx={{ flex: 1 }}>
                         <Button
                             onClick={() => action(id)}

@@ -173,7 +173,7 @@ const UserProfile = () => {
                                                         display: 'inline-block'
                                                     }}
                                                 >
-                                                    Change Profile Picture
+                                                    {user?.user_role === 'admin' ? 'Change Profile Picture' : 'Change Company Logo'}
                                                 </Typography>
                                                 <input type="file" hidden accept="image/*" onChange={handleFileChange} />
                                             </Button>

@@ -31,16 +31,16 @@ const adminEditJobValidation = yup.object({
         .of(yup.number().required('Each value in salary range is required'))
         .min(2, 'Salary range must have min and max')
         .max(2, 'Salary range must have min and max')
-        .required('Salary range is required'),
-    uploadcompanylogo: yup
-        .mixed()
-        .required('Company logo is required')
-        .test('fileType', 'Only JPEG or PNG files are allowed', (value) => {
-            if (!value) return false;
-            if (typeof value === 'string') return true;
-            const file = Array.isArray(value) ? value[0] : value;
-            return file && ['image/jpeg', 'image/png'].includes(file.type);
-        })
+        .required('Salary range is required')
+    // uploadcompanylogo: yup
+    //     .mixed()
+    //     .required('Company logo is required')
+    //     .test('fileType', 'Only JPEG or PNG files are allowed', (value) => {
+    //         if (!value) return false;
+    //         if (typeof value === 'string') return true;
+    //         const file = Array.isArray(value) ? value[0] : value;
+    //         return file && ['image/jpeg', 'image/png'].includes(file.type);
+    //     })
 });
 
 export default adminEditJobValidation;

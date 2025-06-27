@@ -12,7 +12,6 @@ const textColors = {
     1: '#ffffff',
     2: '#000000'
 };
-
 export default function StatusIndicator({ status = 0 }) {
     const backgroundColor = statusColors[status] || '#f0f0f0';
     const textColor = textColors[status] || '#000';

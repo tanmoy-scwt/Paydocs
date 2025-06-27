@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import AuthGuard from 'utils/route-guard/AuthGuard';
+import JobDetailsView from 'views/dashboard/JobDetailsView/JobDetailsView';
 const ApplicationDetails = Loadable(lazy(() => import('views/dashboard/ApplicationDetails/ApplicationDetails')));
 const TotalApplicant = Loadable(lazy(() => import('views/dashboard/TotalApplicants/TotalApplicant')));
 const ApplicantDetailsUser = Loadable(lazy(() => import('views/dashboard/ApplicantDetailsUser/ApplicantDetailsUser')));
@@ -45,6 +46,10 @@ const MainRoutes = {
         {
             path: '/job-listing/form/:page/:id',
             element: <FillOutApplication />
+        },
+        {
+            path: '/job-listing/details/:page/:id',
+            element: <JobDetailsView />
         },
         {
             path: '/post-job',

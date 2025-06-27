@@ -15,6 +15,7 @@ import { openSnackbar } from 'store/slices/snackbar';
 
 import ConfirmDeleteJobModal from 'ui-component/ConfirmDeleteJobModel/ConfirmDeleteJobModel';
 import StatusIndicator from 'ui-component/StatusIndicator/StatusIndicator';
+import defaultImage from '../../assets/images/jobPosting.jpg';
 
 const JobPostBoxForTable = ({ action, jobDetails, viewaction, setter }) => {
     const {
@@ -29,8 +30,12 @@ const JobPostBoxForTable = ({ action, jobDetails, viewaction, setter }) => {
         work_type,
         salary_to,
         salary_from,
-        category_dtls
+        category_dtls,
+        editable,
+        user_dtls
     } = jobDetails;
+    console.log('jobDetails', jobDetails);
+    console.log('editable', editable);
 
     const { user } = useAuth();
     const dispatch = useDispatch();
@@ -102,7 +107,15 @@ const JobPostBoxForTable = ({ action, jobDetails, viewaction, setter }) => {
                             border: !company_logo ? '1px solid #ccc' : 'none',
                             mx: 0 // removes auto-centering
                         }}
-                        src={company_logo ? `${process.env.REACT_APP_API_IMAGE_URL}/${company_logo}` : ''}
+                        src={
+                            user?.user_role === 'admin'
+                                ? user_dtls?.profile_pic
+                                    ? `${process.env.REACT_APP_API_IMAGE_URL}/${user_dtls?.profile_pic}`
+                                    : defaultImage
+                                : user?.profile_pic
+                                ? `${process.env.REACT_APP_API_IMAGE_URL}/${user?.profile_pic}`
+                                : defaultImage
+                        }
                     />
                 </Box>
 
@@ -211,6 +224,7 @@ const JobPostBoxForTable = ({ action, jobDetails, viewaction, setter }) => {
                     <AnimateButton sx={{ flex: 1 }}>
                         <Button
                             onClick={() => action(id)}
+                            disabled={editable === false}
                             sx={{
                                 color: theme.palette.warning.dark,
                                 border: `1px solid ${theme.palette.warning.dark}`,

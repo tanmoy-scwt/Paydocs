@@ -10,7 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { fetchSelectedJobByIDFromAPI } from 'store/jobThunks/jobThunks';
 import MainCard from 'ui-component/cards/MainCard';
 import useCrypto from 'hooks/useCrypto';
-import ApplicantDetails from 'views/dashboard/ApplicantDetails/ApplicantDetails';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 import useJobCategoryList from 'hooks/useListCategory';
 
 const job_Status = [
@@ -19,61 +19,73 @@ const job_Status = [
     { value: 0, label: 'Blocked' }
 ];
 
-const ApplicantDetailsUser = () => {
+const JobDetailsView = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const { id, page } = useParams();
     const JOB_APPLIED_DETAILS = useSelector((state) => state.getJobByID);
+    const { categories, loadingCategory } = useJobCategoryList('/job-category-list');
     const { isLoading, selectedJob } = JOB_APPLIED_DETAILS;
+    const [categoryName, setCategoryName] = useState('');
+    console.log(selectedJob, 'selectedJob');
 
-    const { decrypt } = useCrypto();
-    const SELECTED_STATUS_VALUE = job_Status.find((status) => status.value === selectedJob?.data?.[0]?.status)?.label || 'N/A';
+    const { decrypt, encrypt } = useCrypto();
+    const newDecryptedID = decrypt(id);
+    const SELECTED_STATUS_VALUE = job_Status.find((status) => status.value === selectedJob?.data?.status)?.label || 'N/A';
     const application = {
-        company_name: selectedJob?.data?.[0]?.company_name ? selectedJob?.data?.[0]?.company_name : 'N/A',
-        job_title: selectedJob?.data?.[0]?.title || 'N/A',
-        presonalEmail: selectedJob?.data?.[0]?.email || 'N/A',
-        presonalPhone: selectedJob?.data?.[0]?.phone || 'N/A',
-        messgae: selectedJob?.data?.[0]?.description || 'N/A',
-        attachedFile: selectedJob?.data?.[0]?.supported_doc !== 'null' ? selectedJob?.data?.[0]?.supported_doc : 'N/A',
-        email: selectedJob?.data?.[0]?.email_address || 'N/A',
-        phone: selectedJob?.data?.[0]?.phone_number || 'N/A',
-        noOfApplicant: selectedJob?.data?.[0]?.application_list?.length || 'N/A',
-        job_description: selectedJob?.data?.[0]?.job_description ? selectedJob?.data?.[0]?.job_description : 'N/A',
-        // created_at: selectedJob?.data?.[0]?.created_at ? selectedJob?.data?.[0]?.created_at : 'N/A',
-        location: selectedJob?.data?.[0]?.location ? selectedJob?.data?.[0]?.location : 'N/A',
-        salaryRange: selectedJob?.data?.[0]?.salary_from
-            ? `Rs ${Math.ceil(selectedJob?.data?.[0]?.salary_from)}-${Math.ceil(selectedJob?.data?.[0]?.salary_to)}`
+        company_name: selectedJob?.data?.company_name ? selectedJob?.data?.company_name : 'N/A',
+        job_title: selectedJob?.data?.title || 'N/A',
+        presonalEmail: selectedJob?.data?.email || 'N/A',
+        presonalPhone: selectedJob?.data?.phone || 'N/A',
+        messgae: selectedJob?.data?.description || 'N/A',
+        attachedFile: selectedJob?.data?.supported_doc !== 'null' ? selectedJob?.data?.supported_doc : 'N/A',
+        email: selectedJob?.data?.email_address || 'N/A',
+        phone: selectedJob?.data?.phone_number || 'N/A',
+        noOfApplicant: selectedJob?.data?.application_list?.length || 'N/A',
+        job_description: selectedJob?.data?.job_description ? selectedJob?.data?.job_description : 'N/A',
+        // created_at: selectedJob?.data?.created_at ? selectedJob?.data?.created_at : 'N/A',
+        location: selectedJob?.data?.location ? selectedJob?.data?.location : 'N/A',
+        salaryRange: selectedJob?.data?.salary_from
+            ? `Rs ${Math.ceil(selectedJob?.data?.salary_from)}-${Math.ceil(selectedJob?.data?.salary_to)}`
             : 'N/A',
-        number_of_applicants: selectedJob?.data?.[0]?.number_of_applicants ? selectedJob?.data?.[0]?.number_of_applicants : 'N/A',
-        work_type: selectedJob?.data?.[0]?.work_type ? selectedJob?.data?.[0]?.work_type : 'N/A',
-        jobPosted: selectedJob?.data?.[0]?.created_at ? selectedJob?.data?.[0]?.created_at : 'N/A',
+        number_of_applicants: selectedJob?.data?.number_of_applicants ? selectedJob?.data?.number_of_applicants : 'N/A',
+        work_type: selectedJob?.data?.work_type ? selectedJob?.data?.work_type : 'N/A',
+        jobPosted: selectedJob?.data?.created_at ? selectedJob?.data?.created_at : 'N/A',
         status: SELECTED_STATUS_VALUE ? SELECTED_STATUS_VALUE : 'N/A'
     };
+    useEffect(() => {
+        if (!loadingCategory) {
+            console.log(selectedJob?.data?.job_category_id);
 
+            setCategoryName(categories.find((category) => category.value === selectedJob?.data?.job_category_id)?.label || '');
+        }
+    }, [loadingCategory, categories, selectedJob]);
     useEffect(() => {
         const JOB_ID = decrypt(id);
-        dispatch(fetchSelectedJobByIDFromAPI(`/jobs/posted/application/list/${JOB_ID}`));
+
+        dispatch(fetchSelectedJobByIDFromAPI(`/job-details/${JOB_ID}`));
         return () => {
             dispatch(resetSelectedJobByID());
         };
     }, []);
+    const handleFormOpenAction = (id) => {
+        // const ID = decrypt(id);
+        // console.log(ID);
+        const ID = encrypt(id);
+        console.log(page, 'page');
+        console.log(ID, 'id');
+
+        navigate(`/job-listing/form/${page}/${ID}`);
+        // dispatch(fetchSelectedJobByIDFromAPI(`/job-details/${ID}`));
+        //  navigate(`/job-listing/form/${currentPage}/${ID}`);
+        // dispatch(fetchSelectedJobByIDFromAPI(user?.user_role === 'admin' ? `/admin/job-details/${ID}` : `/job-update/${ID}`));
+    };
 
     const navigate = useNavigate();
 
     const goBack = () => {
-        navigate(`/posted-jobs?page=${page}`);
+        navigate(`/job-listing?page=${page}`);
     };
-
-    const { categories, loadingCategory } = useJobCategoryList('/job-category-list');
-
-    const [categoryName, setCategoryName] = useState('');
-    useEffect(() => {
-        if (!loadingCategory) {
-            console.log(selectedJob?.data?.[0]?.job_category_id);
-
-            setCategoryName(categories.find((category) => category.value === selectedJob?.data?.[0]?.job_category_id)?.label || '');
-        }
-    }, [loadingCategory, categories, selectedJob]);
 
     if (isLoading) {
         return <ApplicationDetailsShimmer />;
@@ -85,13 +97,13 @@ const ApplicantDetailsUser = () => {
         { title: 'Location', content: application?.location },
         { title: 'Work Type', content: application?.work_type },
         { title: 'Category', content: categoryName || 'N/A' },
+        { title: 'Total Applications Received', content: application?.noOfApplicant },
         { title: 'Email', content: application?.email },
         { title: 'Phone', content: application?.phone },
         { title: 'Salary Range', content: application?.salaryRange },
         { title: 'No of Applicants', content: application?.number_of_applicants },
         { title: 'Job Posted', content: new Date(application?.jobPosted).toLocaleDateString('en-GB') },
         // { title: 'Created On', content: new Date(application?.created_at).toLocaleDateString('en-GB') },
-        { title: 'Total Applications Received', content: application?.noOfApplicant },
         { title: 'Status', content: application?.status || 'N/A' }
     ];
 
@@ -105,16 +117,31 @@ const ApplicantDetailsUser = () => {
                 >
                     <CardContent>
                         {/* Go Back Button */}
-                        <Stack direction="row" justifyContent="flex-start" mb={3}>
+                        <Stack direction="row" justifyContent="space-between" mb={3}>
                             <Button variant="outlined" startIcon={<ArrowBackIcon />} onClick={goBack}>
                                 Go Back
                             </Button>
+                            <AnimateButton sx={{ flex: 1 }}>
+                                <Button
+                                    onClick={() => handleFormOpenAction(newDecryptedID)}
+                                    sx={{
+                                        backgroundColor: theme.palette.secondary.main,
+                                        '&:hover': { backgroundColor: theme.palette.secondary.dark },
+                                        textTransform: 'capitalize',
+                                        width: '100%'
+                                    }}
+                                    variant="contained"
+                                    size="large"
+                                >
+                                    Apply Now
+                                </Button>
+                            </AnimateButton>
                         </Stack>
                         <Divider sx={{ my: 4 }} />
                         <Grid item xs={12}>
                             <Grid sx={{ mt: 2, mb: 4 }}>
                                 <Typography variant="title" gutterBottom>
-                                    Job Profile Details
+                                    Job Details
                                 </Typography>
                             </Grid>
 
@@ -142,29 +169,6 @@ const ApplicantDetailsUser = () => {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Divider sx={{ my: 4 }} />
-                        <Grid item xs={12}>
-                            <Typography variant="title" gutterBottom>
-                                Application Details
-                            </Typography>
-
-                            {selectedJob?.data?.[0]?.application_list && selectedJob?.data?.[0]?.application_list.length > 0 ? (
-                                selectedJob?.data?.[0]?.application_list?.map((application, index) => {
-                                    return <ApplicantDetails key={index} applicant={application} />;
-                                })
-                            ) : (
-                                <Grid
-                                    sx={{
-                                        height: 200,
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <Typography>No Application Received</Typography>
-                                </Grid>
-                            )}
-                        </Grid>
                     </CardContent>
                 </MainCard>
             </Grid>
@@ -172,4 +176,4 @@ const ApplicantDetailsUser = () => {
     );
 };
 
-export default ApplicantDetailsUser;
+export default JobDetailsView;

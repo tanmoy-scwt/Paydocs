@@ -31,16 +31,16 @@ const adminPostJobValidation = yup.object({
     phone_number: yup.string().matches(/^\d{10}$/, 'Enter a valid 10-digit phone number'),
     //     .required('Phone number is required'),
 
-    job_description: yup.string().min(10, 'Description should be at least 10 characters').required('Job description is required'),
+    job_description: yup.string().min(10, 'Description should be at least 10 characters').required('Job description is required')
 
-    uploadcompanylogo: yup
-        .mixed()
-        .required('Company logo is required')
-        .test('fileType', 'Only JPEG or PNG files are allowed', (value) => {
-            if (!value) return false;
-            const file = Array.isArray(value) ? value[0] : value;
-            return file && ['image/jpeg', 'image/png'].includes(file.type);
-        })
+    // uploadcompanylogo: yup
+    //     .mixed()
+    //     .required('Company logo is required')
+    //     .test('fileType', 'Only JPEG or PNG files are allowed', (value) => {
+    //         if (!value) return false;
+    //         const file = Array.isArray(value) ? value[0] : value;
+    //         return file && ['image/jpeg', 'image/png'].includes(file.type);
+    //     })
 });
 
 export default adminPostJobValidation;

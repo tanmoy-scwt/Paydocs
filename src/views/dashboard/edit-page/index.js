@@ -1,7 +1,7 @@
 // material-ui
 import {
-    Avatar,
-    Box,
+    // Avatar,
+    // Box,
     Button,
     Divider,
     FormControl,
@@ -10,8 +10,8 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField,
-    Typography
+    TextField
+    // Typography
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useTheme } from '@mui/system';
@@ -27,7 +27,6 @@ import { useDispatch } from 'store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { fetchSelectedJobByIDFromAPI, postJobFormData } from 'store/jobThunks/jobThunks';
-import useAuth from 'hooks/useAuth';
 import { resetSelectedJobByID } from 'store/slices/JobsSlices/getJobByID';
 import EditPageSkeleton from 'ui-component/cards/Skeleton/EditPageSkeleton';
 import { openSnackbar } from 'store/slices/snackbar';
@@ -39,12 +38,17 @@ import useCrypto from 'hooks/useCrypto';
 // ================== Work Types ====================
 const work_types = workTypesData;
 const job_Status = jobStatusData;
+// const job_Status = [
+//     { value: 0, label: 'Blocked' },
+//     { value: 1, label: 'Open' },
+//     { value: 2, label: 'Closed' }
+// ];
+// 0->blocked,1->open,2->closed
 const validationSchema = userPostJobValidation;
 
 const EditJobForm = () => {
     const { categories, loadingCategory, categoryError } = useJobCategoryList('/job-category-list');
     const theme = useTheme();
-    const { user } = useAuth();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { id, page } = useParams();
@@ -61,6 +65,7 @@ const EditJobForm = () => {
             dispatch(resetSelectedJobByID());
         };
     }, [id]);
+    console.log(JOB_POST_DETAILS?.data?.status, 'JOB_POST_DETAILS?.data?.status');
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -76,7 +81,8 @@ const EditJobForm = () => {
             email_address: JOB_POST_DETAILS?.data?.email_address || '',
             phone_number: JOB_POST_DETAILS?.data?.phone_number || '',
             job_description: JOB_POST_DETAILS?.data?.job_description || '',
-            uploadcompanylogo: JOB_POST_DETAILS?.data?.company_logo || null
+            // uploadcompanylogo: JOB_POST_DETAILS?.data?.company_logo || null,
+            status: JOB_POST_DETAILS?.data?.status + 1 || ''
         },
 
         validationSchema,
@@ -86,6 +92,8 @@ const EditJobForm = () => {
                 if (key === 'salaryRange') {
                     formData.append('salary_from', value[0]);
                     formData.append('salary_to', value[1]);
+                } else if (key === 'status') {
+                    formData.append(key, value - 1); // Adjusting status value to match API
                 } else {
                     formData.append(key, value);
                 }
@@ -110,10 +118,10 @@ const EditJobForm = () => {
         }
     });
 
-    const handleImageChange = (event) => {
-        const file = event.currentTarget.files[0];
-        formik.setFieldValue('uploadcompanylogo', file);
-    };
+    // const handleImageChange = (event) => {
+    //     const file = event.currentTarget.files[0];
+    //     formik.setFieldValue('uploadcompanylogo', file);
+    // };
 
     const handleSalaryChange = (newValue) => {
         formik.setFieldValue('salaryRange', newValue);
@@ -283,7 +291,7 @@ const EditJobForm = () => {
                                         helperText={formik.touched.job_description && formik.errors.job_description}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                {/* <Grid item xs={12}>
                                     <Box
                                         sx={{
                                             py: 4,
@@ -343,27 +351,27 @@ const EditJobForm = () => {
                                             )}
                                         </Grid>
                                     </Box>
-                                    {user?.user_role === 'admin' && (
-                                        <FormControl fullWidth error={formik.touched.work_type && Boolean(formik.errors.work_type)}>
-                                            <InputLabel id="work_type-label">Job Status</InputLabel>
-                                            <Select
-                                                labelId="work_type-label"
-                                                id="status"
-                                                name="status"
-                                                value={formik.values.status}
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                                label="Job Status"
-                                            >
-                                                {job_Status.map((option) => (
-                                                    <MenuItem key={option.value} value={option.value}>
-                                                        {option.label}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                            <FormHelperText>{formik.touched.work_type && formik.errors.work_type}</FormHelperText>
-                                        </FormControl>
-                                    )}
+                                </Grid> */}
+                                <Grid item xs={12}>
+                                    <FormControl fullWidth error={formik.touched.work_type && Boolean(formik.errors.work_type)}>
+                                        <InputLabel id="jobStatus">Job Status</InputLabel>
+                                        <Select
+                                            labelId="jobStatus"
+                                            id="status"
+                                            name="status"
+                                            value={formik.values.status}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            label="Job Status"
+                                        >
+                                            {job_Status.map((option) => (
+                                                <MenuItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                        <FormHelperText>{formik.touched.work_type && formik.errors.work_type}</FormHelperText>
+                                    </FormControl>
                                 </Grid>
                                 <Grid item sx={{ paddingX: '1rem', paddingY: '2rem' }} container spacing={gridSpacing}>
                                     <Grid item>

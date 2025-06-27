@@ -1,6 +1,6 @@
 import {
-    Avatar,
-    Box,
+    // Avatar,
+    // Box,
     Button,
     Divider,
     FormControl,
@@ -9,8 +9,8 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField,
-    Typography
+    TextField
+    // Typography
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useTheme } from '@mui/system';
@@ -31,11 +31,16 @@ import { resetPostJobFormData } from 'store/slices/JobsSlices/postJobFormData';
 import useCrypto from 'hooks/useCrypto';
 import useAdminAllUserList from 'hooks/useAdminAllUserList';
 import adminEditJobValidation from 'views/forms/validations/adminEditJobValidation';
-import { workTypesData, jobStatusData } from 'views/forms/FormSelectBoxData';
+import { jobStatusData, workTypesData } from 'views/forms/FormSelectBoxData';
 
 // ================== External Form Data ====================
 const work_types = workTypesData;
 const job_Status = jobStatusData;
+// const job_Status = [
+//     { value: '0', label: 'Blocked' },
+//     { value: '1', label: 'Open' },
+//     { value: '2', label: 'Closed' }
+// ];
 const validationSchema = adminEditJobValidation;
 
 const EditCurrentJobAdmin = () => {
@@ -45,12 +50,10 @@ const EditCurrentJobAdmin = () => {
     const dispatch = useDispatch();
     const { id, page } = useParams();
     const { decrypt } = useCrypto();
-
     const selectedJOBValue = useSelector((state) => state.getJobByID);
     const JOB_POST_DETAILS = selectedJOBValue?.selectedJob;
     const { isLoadingFormData } = useSelector((state) => state.PostJobFormDataAPI);
     const { adminUserList, loadingAdminUserList, adminUserListError } = useAdminAllUserList('/admin/user-name-list');
-
     const JOB_ID = decrypt(id);
     useEffect(() => {
         if (id) {
@@ -77,7 +80,7 @@ const EditCurrentJobAdmin = () => {
             email_address: JOB_POST_DETAILS?.data?.email_address || '',
             phone_number: JOB_POST_DETAILS?.data?.phone_number || '',
             job_description: JOB_POST_DETAILS?.data?.job_description || '',
-            uploadcompanylogo: JOB_POST_DETAILS?.data?.company_logo || null,
+            // uploadcompanylogo: JOB_POST_DETAILS?.data?.company_logo || null,
             status: JOB_POST_DETAILS?.data?.status + 1 || '',
             user_id: JOB_POST_DETAILS?.data?.user_id || ''
         },
@@ -91,6 +94,7 @@ const EditCurrentJobAdmin = () => {
                 if (key === 'salaryRange') {
                     formData.append('salary_from', value[0]);
                     formData.append('salary_to', value[1]);
+                    // formData.append('uploadcompanylogo', selectedCompanyLogo || defaultLogo);
                 } else if (key === 'status') {
                     formData.append(key, value - 1);
                 } else {
@@ -115,10 +119,10 @@ const EditCurrentJobAdmin = () => {
         }
     });
 
-    const handleImageChange = (event) => {
-        const file = event.currentTarget.files[0];
-        formik.setFieldValue('uploadcompanylogo', file);
-    };
+    // const handleImageChange = (event) => {
+    //     const file = event.currentTarget.files[0];
+    //     formik.setFieldValue('uploadcompanylogo', file);
+    // };
 
     const handleSalaryChange = (newValue) => {
         formik.setFieldValue('salaryRange', newValue);
@@ -319,7 +323,7 @@ const EditCurrentJobAdmin = () => {
                                         helperText={formik.touched.job_description && formik.errors.job_description}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                {/* <Grid item xs={12}>
                                     <Box
                                         sx={{
                                             py: 4,
@@ -379,7 +383,7 @@ const EditCurrentJobAdmin = () => {
                                             )}
                                         </Grid>
                                     </Box>
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={12}>
                                     <FormControl fullWidth error={formik.touched.work_type && Boolean(formik.errors.work_type)}>
                                         <InputLabel id="work_type-label">Job Status</InputLabel>

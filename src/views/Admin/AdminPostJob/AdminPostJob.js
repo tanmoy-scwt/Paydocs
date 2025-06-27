@@ -1,7 +1,7 @@
 // material-ui
 import {
-    Avatar,
-    Box,
+    // Avatar,
+    // Box,
     Button,
     Divider,
     FormControl,
@@ -10,8 +10,8 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField,
-    Typography
+    TextField
+    // Typography
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useTheme } from '@mui/system';
@@ -57,8 +57,8 @@ const AdminPostJob = () => {
             company_name: '',
             email_address: '',
             phone_number: '',
-            job_description: '',
-            uploadcompanylogo: null
+            job_description: ''
+            // uploadcompanylogo: null
         },
 
         validationSchema,
@@ -91,10 +91,10 @@ const AdminPostJob = () => {
         }
     });
 
-    const handleImageChange = (event) => {
-        const file = event.currentTarget.files[0];
-        formik.setFieldValue('uploadcompanylogo', file);
-    };
+    // const handleImageChange = (event) => {
+    //     const file = event.currentTarget.files[0];
+    //     formik.setFieldValue('uploadcompanylogo', file);
+    // };
 
     const handleSalaryChange = (newValue) => {
         formik.setFieldValue('salaryRange', newValue);
@@ -294,7 +294,7 @@ const AdminPostJob = () => {
                                         helperText={formik.touched.job_description && formik.errors.job_description}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                {/* <Grid item xs={12}>
                                     <Box
                                         sx={{
                                             py: 4,
@@ -360,7 +360,7 @@ const AdminPostJob = () => {
                                             )}
                                         </FormControl>
                                     </Box>
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={12}>
                                     <AnimateButton>
                                         <Button

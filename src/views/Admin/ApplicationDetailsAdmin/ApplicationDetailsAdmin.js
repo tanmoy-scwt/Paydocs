@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CardContent, Typography, Grid, Divider, Button, Stack } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useTheme } from '@mui/system';
@@ -12,6 +12,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import useCrypto from 'hooks/useCrypto';
 import ApplicantDetails from 'views/dashboard/ApplicantDetails/ApplicantDetails';
 import { workTypesData } from 'views/forms/FormSelectBoxData';
+import useJobCategoryList from 'hooks/useListCategory';
 
 const ApplicationDetailsAdmin = () => {
     const theme = useTheme();
@@ -81,6 +82,16 @@ const ApplicationDetailsAdmin = () => {
         }
     };
 
+    const { categories, loadingCategory } = useJobCategoryList('/admin/job-category-list');
+    const [categoryName, setCategoryName] = useState('');
+    useEffect(() => {
+        if (!loadingCategory) {
+            console.log(selectedJob?.data?.[0]?.job_category_id);
+
+            setCategoryName(categories.find((category) => category.value === selectedJob?.data?.[0]?.job_category_id)?.label || '');
+        }
+    }, [loadingCategory, categories, selectedJob]);
+
     if (isLoading) {
         return <ApplicationDetailsShimmer />;
     }
@@ -92,6 +103,7 @@ const ApplicationDetailsAdmin = () => {
         { title: 'Job Title', content: application?.job_title },
         { title: 'Company Name', content: application?.company_name },
         { title: 'Location', content: application?.location },
+        { title: 'Category', content: categoryName || 'N/A' },
         { title: 'Work Type', content: workType?.label },
         { title: 'Email', content: application?.email },
         { title: 'Phone', content: application?.phone },

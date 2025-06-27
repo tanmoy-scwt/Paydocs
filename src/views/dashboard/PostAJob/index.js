@@ -1,7 +1,7 @@
 // material-ui
 import {
-    Avatar,
-    Box,
+    // Avatar,
+    // Box,
     Button,
     Divider,
     FormControl,
@@ -10,8 +10,8 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField,
-    Typography
+    TextField
+    // Typography
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useTheme } from '@mui/system';
@@ -30,6 +30,7 @@ import { resetPostJobFormData } from 'store/slices/JobsSlices/postJobFormData';
 import { useSelector } from 'store';
 import { postJobFormData } from 'store/jobThunks/jobThunks';
 import useAuth from 'hooks/useAuth';
+// import defaultCompanyLogo from '../../../assets/images/jobPosting.jpg';
 
 // ================== Work Types ====================
 
@@ -37,6 +38,8 @@ const work_types = workTypesData;
 const validationSchema = userPostJobValidation;
 const PostAJob = () => {
     const { user } = useAuth();
+    console.log(user, 'user in PostAJob');
+
     const { categories, loadingCategory, categoryError } = useJobCategoryList('/job-category-list');
     const { isLoadingFormData } = useSelector((state) => state.PostJobFormDataAPI);
     const theme = useTheme();
@@ -54,8 +57,8 @@ const PostAJob = () => {
             company_name: user?.company_name,
             email_address: '',
             phone_number: '',
-            job_description: '',
-            uploadcompanylogo: null
+            job_description: ''
+            // uploadcompanylogo: null
         },
 
         validationSchema,
@@ -65,6 +68,7 @@ const PostAJob = () => {
                 if (key === 'salaryRange') {
                     formData.append('salary_from', value[0]);
                     formData.append('salary_to', value[1]);
+                    // formData.append('uploadcompanylogo', user?.profile_pic || defaultCompanyLogo);
                 } else {
                     formData.append(key, value);
                 }
@@ -86,10 +90,10 @@ const PostAJob = () => {
             });
         }
     });
-    const handleImageChange = (event) => {
-        const file = event.currentTarget.files[0];
-        formik.setFieldValue('uploadcompanylogo', file);
-    };
+    // const handleImageChange = (event) => {
+    //     const file = event.currentTarget.files[0];
+    //     formik.setFieldValue('uploadcompanylogo', file);
+    // };
 
     const handleSalaryChange = (newValue) => {
         formik.setFieldValue('salaryRange', newValue);
@@ -257,7 +261,7 @@ const PostAJob = () => {
                                         helperText={formik.touched.job_description && formik.errors.job_description}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                {/* <Grid item xs={12}>
                                     <Box
                                         sx={{
                                             py: 4,
@@ -323,7 +327,7 @@ const PostAJob = () => {
                                             )}
                                         </FormControl>
                                     </Box>
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={12}>
                                     <AnimateButton>
                                         <Button
