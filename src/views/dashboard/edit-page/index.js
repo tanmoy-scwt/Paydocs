@@ -404,7 +404,7 @@ const EditJobForm = () => {
                                                 }}
                                                 disabled={isLoadingFormData}
                                             >
-                                                {isLoadingFormData ? 'Submiting...' : 'Submit Now'}
+                                                {isLoadingFormData ? 'Saving...' : 'Save'}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>

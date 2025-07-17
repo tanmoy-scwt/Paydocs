@@ -438,7 +438,7 @@ const EditCurrentJobAdmin = () => {
                                                 }}
                                                 disabled={isLoadingFormData}
                                             >
-                                                {isLoadingFormData ? 'Submitting...' : 'Submit Now'}
+                                                {isLoadingFormData ? 'Saving...' : 'Save'}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
